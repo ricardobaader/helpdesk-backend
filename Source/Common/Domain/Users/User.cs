@@ -1,17 +1,46 @@
-﻿namespace Common.Domain.Users
+﻿using Azure.Core;
+using Common.Domain.Tickets;
+using Common.Utils;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+
+namespace Common.Domain.Users
 {
     public class User : BaseEntity
     {
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
+        public UserType UserType{ get; private set; }
+        private readonly IList<Ticket> _tickets = new List<Ticket>();
+        [JsonIgnore] public virtual ICollection<Ticket> Tickets => _tickets;
 
-        public User(string name, string email, string password)
+        public User(string name, string email, string password, UserType userType)
         {
-            SetBaseProperty();
-            Name = name;
-            Email = email;  
-            Password = password;
+            ValidateInfo(name, email, password, userType);
+
+            if (IsValid)
+            {
+                SetBaseProperties();
+                Name = name;
+                Email = email;
+                Password = password;
+                UserType = userType;
+            }
+        }
+
+        private void ValidateInfo(string name, string email, string password, UserType userType)
+        {
+            Regex validateEmailRegex =
+                new("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+
+            Errors = EntityValidator.New()
+           .Requiring(name, "O nome deve ser informado")
+           .Requiring(email, "O email deve ser informado")
+           .Requiring(password, "A senha deve ser informada")
+           .Requiring(userType, "O tipo do usuário deve ser informado")
+           .When(!validateEmailRegex.IsMatch(email), "O email informado é inválido")
+           .GetErrors();
         }
     }
 }
