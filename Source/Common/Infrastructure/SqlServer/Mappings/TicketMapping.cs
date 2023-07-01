@@ -19,6 +19,7 @@ namespace Common.Infrastructure.SqlServer.Mappings
             Builder.Property(x => x.Description).HasColumnName("description").IsRequired();
             Builder.Property(x => x.Room).HasColumnName("room").IsRequired();
             Builder.Property(x => x.UserId).HasColumnName("user_id").IsRequired();
+            Builder.Property(x => x.Status).HasColumnName("status").IsRequired();
         }
 
         protected override void MapIndexes()

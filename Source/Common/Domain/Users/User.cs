@@ -38,7 +38,7 @@ namespace Common.Domain.Users
            .Requiring(name, "O nome deve ser informado")
            .Requiring(email, "O email deve ser informado")
            .Requiring(password, "A senha deve ser informada")
-           .Requiring(userType, "O tipo do usuário deve ser informado")
+           .When(!Enum.IsDefined(userType), "O tipo de usuário informado é inválido")
            .When(!validateEmailRegex.IsMatch(email), "O email informado é inválido")
            .GetErrors();
         }

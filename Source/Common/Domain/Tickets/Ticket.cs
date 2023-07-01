@@ -9,6 +9,7 @@ namespace Common.Domain.Tickets
         public string Title { get; private set; }
         public string Description { get; private set; }
         public string Room { get; private set; }
+        public TicketStatus Status { get;private set; }
         [JsonIgnore] public virtual User User { get; protected set; }
         public Guid UserId { get; set; }
 
@@ -22,6 +23,7 @@ namespace Common.Domain.Tickets
                 Title = title;
                 Description = description;
                 Room = room;
+                Status = TicketStatus.Pending;
                 UserId = userId;
             }
         }

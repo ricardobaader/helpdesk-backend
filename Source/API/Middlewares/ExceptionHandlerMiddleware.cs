@@ -1,6 +1,6 @@
-﻿using Azure;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net;
+using Common.Exceptions;
 
 namespace API.Middlewares
 {
@@ -28,6 +28,9 @@ namespace API.Middlewares
                 response.ContentType = "application/json";
                 switch (e)
                 {
+                    case Common.Exceptions.InvalidDataException:
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
                     default:
                         _logger.LogError(e, $"Unexpected error: {e.Message}");
                         response.StatusCode = (int)HttpStatusCode.InternalServerError;

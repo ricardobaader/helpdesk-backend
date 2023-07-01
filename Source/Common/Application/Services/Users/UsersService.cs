@@ -15,6 +15,10 @@ namespace Common.Application.Services.Users
         public async Task Create(CreateUserDto request)
         {
             var user = UserMapper.MapCreateUserDtoToUser(request);
+
+            if (!user.IsValid)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", user.Errors)}");
+
             await _userRepository.InsertOne(user);
         }
     }

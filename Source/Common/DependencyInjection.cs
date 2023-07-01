@@ -1,16 +1,12 @@
-﻿using Common.Domain;
-using Common.Infrastructure.SqlServer.Common;
+﻿using Common.Application.Services.Tickets;
+using Common.Application.Services.Users;
+using Common.Configurations;
+using Common.Domain;
 using Common.Infrastructure.SqlServer;
+using Common.Infrastructure.SqlServer.Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Configurations;
-using Microsoft.EntityFrameworkCore;
-using Common.Application.Services.Tickets;
 
 namespace Common
 {
@@ -19,11 +15,14 @@ namespace Common
         public static void AddCommon(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSqlServer(configuration);
+            services.AddServices();
         }
 
         internal static void AddServices(this IServiceCollection services)
         {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITicketsService, TicketsService>();
+            services.AddScoped<IUsersService, UsersService>();
         }
 
         internal static void AddSqlServer(this IServiceCollection services, IConfiguration configuration)

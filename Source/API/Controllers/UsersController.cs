@@ -11,6 +11,12 @@ namespace API.Controllers
     {
         private readonly IUsersService _usersService;
 
+        public UsersController(IUsersService usersService)
+        {
+            _usersService = usersService;
+        }
+
+        [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
             await _usersService.Create(request.ToCreateUserDto());
