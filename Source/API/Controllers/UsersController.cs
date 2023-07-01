@@ -1,7 +1,6 @@
 ﻿using API.DTOs.Requests;
 using Common.Application.Services.Users;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 
 namespace API.Controllers
 {

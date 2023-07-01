@@ -29,7 +29,7 @@ namespace Common.Infrastructure.SqlServer.Mappings
 
         protected override void MapForeignKeys()
         {
-            Builder.HasOne(x=> x.User)
+            Builder.HasOne(x => x.User)
                .WithMany(x => x.Tickets)
                .HasForeignKey(x => x.UserId);
         }

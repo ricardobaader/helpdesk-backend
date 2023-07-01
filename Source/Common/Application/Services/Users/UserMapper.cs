@@ -1,5 +1,4 @@
-﻿using Common.Domain.Tickets;
-using Common.Domain.Users;
+﻿using Common.Domain.Users;
 
 namespace Common.Application.Services.Users
 {

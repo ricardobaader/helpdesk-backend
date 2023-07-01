@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Common.Domain.Tickets;
+﻿using Common.Domain.Tickets;
 using Common.Utils;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -11,7 +10,7 @@ namespace Common.Domain.Users
         public string Name { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
-        public UserType UserType{ get; private set; }
+        public UserType UserType { get; private set; }
         private readonly IList<Ticket> _tickets = new List<Ticket>();
         [JsonIgnore] public virtual ICollection<Ticket> Tickets => _tickets;
 
