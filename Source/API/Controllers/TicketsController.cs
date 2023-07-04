@@ -26,21 +26,28 @@ namespace API.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<ListTicketsResponse>> ListTickets([FromRoute] Guid userId)
         {
-            var tickets = await _ticketsService.ListTicketsBy(userId);
+            var tickets = await _ticketsService.ListBy(userId);
             return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
         }
 
         [HttpPut("{id}/start")]
         public async Task<IActionResult> StartTicket([FromRoute] Guid id, [FromBody] Guid userId)
         {
-            await _ticketsService.StartTicket(id, userId);
+            await _ticketsService.Start(id, userId);
             return Ok();
         }
 
         [HttpPut("{id}/finish")]
         public async Task<IActionResult> FinishTicket([FromRoute] Guid id, [FromBody] Guid userId)
         {
-            await _ticketsService.FinishTicket(id, userId);
+            await _ticketsService.Finish(id, userId);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTicket([FromRoute] Guid id)
+        {
+            await _ticketsService.Delete(id);
             return Ok();
         }
     }

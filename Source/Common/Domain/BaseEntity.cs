@@ -16,5 +16,7 @@ namespace Common.Domain
             Id = Guid.NewGuid();
             IsDeleted = false;
         }
+
+        public void SetDelete() => IsDeleted = true;
     }
 }

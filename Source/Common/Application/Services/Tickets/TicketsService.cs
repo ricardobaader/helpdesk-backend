@@ -22,7 +22,7 @@ namespace Common.Application.Services.Tickets
             await _ticketsRepository.InsertOne(ticket);
         }
 
-        public async Task<IEnumerable<ListTicketsDto>> ListTicketsBy(Guid userId)
+        public async Task<IEnumerable<ListTicketsDto>> ListBy(Guid userId)
         {
             var user = await _usersRepository.SelectOneBy(x => x.Id == userId && !x.IsDeleted);
 
@@ -41,7 +41,7 @@ namespace Common.Application.Services.Tickets
             }, x => !x.IsDeleted);
         }
 
-        public async Task StartTicket(Guid id, Guid userId)
+        public async Task Start(Guid id, Guid userId)
         {
             var ticket = await ValidateIfTicketCanChangeStatus(id, userId);
 
@@ -50,7 +50,7 @@ namespace Common.Application.Services.Tickets
             _ticketsRepository.UpdateOne(ticket);
         }
 
-        public async Task FinishTicket(Guid id, Guid userId)
+        public async Task Finish(Guid id, Guid userId)
         {
             var ticket = await ValidateIfTicketCanChangeStatus(id, userId);
 
@@ -78,6 +78,21 @@ namespace Common.Application.Services.Tickets
                 throw new Exceptions.InvalidDataException("Somente um funcionário da equipe de suporte pode alterar um chamado");
 
             return ticket;
+        }
+
+        public async Task Delete(Guid id)
+        {
+            var ticket = await _ticketsRepository.SelectOneBy(x => x.Id == id && !x.IsDeleted);
+
+            if (ticket is null)
+                throw new Exceptions.EntityNotFoundException("O ticket informado não existe");
+
+            if (ticket.Status != TicketStatus.Pending)
+                throw new Exceptions.InvalidDataException("Um ticket em andamento ou concluído não pode ser excluído");
+
+            ticket.SetDelete();
+
+            _ticketsRepository.DeleteOne(ticket);
         }
     }
 }

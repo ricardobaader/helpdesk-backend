@@ -5,8 +5,9 @@ namespace Common.Application.Services.Tickets
     public interface ITicketsService
     {
         Task Create(CreateTicketDto request);
-        Task<IEnumerable<ListTicketsDto>> ListTicketsBy(Guid userId);
-        Task StartTicket(Guid id, Guid userId);
-        Task FinishTicket(Guid id, Guid userId);
+        Task<IEnumerable<ListTicketsDto>> ListBy(Guid userId);
+        Task Start(Guid id, Guid userId);
+        Task Finish(Guid id, Guid userId);
+        Task Delete(Guid id);
     }
 }
