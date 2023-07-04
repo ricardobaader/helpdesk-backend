@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Common.Exceptions;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace API.Middlewares
@@ -29,6 +30,10 @@ namespace API.Middlewares
                 {
                     case Common.Exceptions.InvalidDataException:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        break;
+                    case EntityNotFoundException:
+                        _logger.LogWarning(e, $"Expected error: {e.Message}");
+                        response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     default:
                         _logger.LogError(e, $"Unexpected error: {e.Message}");

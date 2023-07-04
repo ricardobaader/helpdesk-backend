@@ -1,4 +1,5 @@
 ﻿using Common.Domain.Rooms;
+using Common.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Utils.Extensions
@@ -18,6 +19,10 @@ namespace Common.Utils.Extensions
                 new Room { Name = "D2" },
                 new Room { Name = "E1" },
                 new Room { Name = "E2" }
+                );
+
+            modelBuilder.Entity<User>().HasData(
+                new User("admin", "admin@gmail.com.br", "admin123", UserType.Admin)
                 );
         }
     }

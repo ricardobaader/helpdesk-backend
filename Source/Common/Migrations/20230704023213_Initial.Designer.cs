@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Common.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230701211755_SeedRooms")]
-    partial class SeedRooms
+    [Migration("20230704023213_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,61 +52,61 @@ namespace Common.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("841e259d-cd5d-4997-8812-7e5f410fd4fa"),
+                            Id = new Guid("b6838ce3-9e09-4b88-a379-587647b9adfb"),
                             IsDeleted = false,
                             Name = "A1"
                         },
                         new
                         {
-                            Id = new Guid("1803fe74-ec77-4636-ba82-62218d67ec6d"),
+                            Id = new Guid("59fd13c4-db67-441f-8f07-e91c53288c56"),
                             IsDeleted = false,
                             Name = "A2"
                         },
                         new
                         {
-                            Id = new Guid("8bfc63ea-deec-40bf-a54c-9343b29ca851"),
+                            Id = new Guid("c21d566a-3785-493c-bcb8-9c24265885d6"),
                             IsDeleted = false,
                             Name = "B1"
                         },
                         new
                         {
-                            Id = new Guid("b1285d62-db5d-4a0e-894b-4aeee67480af"),
+                            Id = new Guid("419d345f-91f3-43b9-8de9-46b12a642fb9"),
                             IsDeleted = false,
                             Name = "B2"
                         },
                         new
                         {
-                            Id = new Guid("7a866c5b-ccf9-4dab-9355-1d6a22c092c5"),
+                            Id = new Guid("444e105d-2891-4753-8927-e24eed8a0a30"),
                             IsDeleted = false,
                             Name = "C1"
                         },
                         new
                         {
-                            Id = new Guid("2b773451-1765-494d-be0a-860939938b57"),
+                            Id = new Guid("d5b5b097-251d-420b-88be-194180a9d80b"),
                             IsDeleted = false,
                             Name = "C2"
                         },
                         new
                         {
-                            Id = new Guid("17a0910f-3b6d-42cf-b7ed-d6b243d43eb2"),
+                            Id = new Guid("dd61a4df-2c49-44bd-a01c-9dbd50f77c02"),
                             IsDeleted = false,
                             Name = "D1"
                         },
                         new
                         {
-                            Id = new Guid("22427b3c-e652-4d93-9b9a-76369e56a5f6"),
+                            Id = new Guid("53f23e7c-52d5-4a81-ba69-43401fa4d55b"),
                             IsDeleted = false,
                             Name = "D2"
                         },
                         new
                         {
-                            Id = new Guid("76c18967-ff4b-4af1-9b87-83bc99076579"),
+                            Id = new Guid("93941f7f-7f17-456d-85b1-76ddf4ebe745"),
                             IsDeleted = false,
                             Name = "E1"
                         },
                         new
                         {
-                            Id = new Guid("87d43a76-e5e3-45f9-8c5a-84ddc9d22352"),
+                            Id = new Guid("39911d57-a14d-4a63-981e-b9e9b841adfa"),
                             IsDeleted = false,
                             Name = "E2"
                         });
@@ -192,6 +192,17 @@ namespace Common.Migrations
                         .IsUnique();
 
                     b.ToTable("users", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e8a672fd-6a60-47b1-8768-c9acb4d6abf5"),
+                            Email = "admin@gmail.com.br",
+                            IsDeleted = false,
+                            Name = "admin",
+                            Password = "admin123",
+                            UserType = 2
+                        });
                 });
 
             modelBuilder.Entity("Common.Domain.Tickets.Ticket", b =>

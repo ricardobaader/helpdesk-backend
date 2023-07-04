@@ -28,6 +28,12 @@ namespace Common.Domain.Tickets
             }
         }
 
+        public void StartTicket() =>
+            Status = TicketStatus.InProgress;
+
+        public void FinishTicket() =>
+            Status = TicketStatus.Finished;
+
         private void ValidateInfo(string title, string description, string room) => Errors = EntityValidator.New()
             .Requiring(title, "O título deve ser informado")
             .Requiring(description, "A descrição deve ser informada")
