@@ -1,5 +1,4 @@
-﻿using Common.Domain;
-using Common.Domain.Users;
+﻿using Common.Domain.Users;
 using Common.Utils.Extensions;
 
 namespace Common.Application.Services.Users

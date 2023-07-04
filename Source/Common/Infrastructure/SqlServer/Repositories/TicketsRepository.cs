@@ -17,12 +17,12 @@ namespace Common.Infrastructure.SqlServer.Repositories
                 .Where(x => !x.IsDeleted && x.UserId == userId)
                 .AsNoTracking()
                 .Select(x => new ListTicketsDto
-            {
-                Code = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                Status = x.Status.GetDescription(),
-            }).ToListAsync();
+                {
+                    Code = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    Status = x.Status.GetDescription(),
+                }).ToListAsync();
         }
     }
 }
