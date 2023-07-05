@@ -8,6 +8,7 @@ namespace API.DTOs.Responses
         public string Title { get; init; }
         public string Description { get; init; }
         public string Status { get; init; }
+        public string Room { get; init; }
 
         public static ListTicketsResponse ToListTicketsResponse(ListTicketsDto listTicketsDto) => new()
         {
@@ -15,6 +16,7 @@ namespace API.DTOs.Responses
             Description = listTicketsDto.Description,
             Status = listTicketsDto.Status,
             Code = listTicketsDto.Code,
+            Room  = listTicketsDto.Room,
         };
     }
 }

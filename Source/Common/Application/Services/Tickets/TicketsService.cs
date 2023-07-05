@@ -37,7 +37,8 @@ namespace Common.Application.Services.Tickets
                 Code = x.Id,
                 Description = x.Description,
                 Status = x.Status.GetDescription(),
-                Title = x.Title
+                Title = x.Title,
+                Room = x.Room,
             }, x => !x.IsDeleted);
         }
 

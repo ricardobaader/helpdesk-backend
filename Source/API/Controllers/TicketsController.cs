@@ -30,15 +30,15 @@ namespace API.Controllers
             return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
         }
 
-        [HttpPut("{id}/start")]
-        public async Task<IActionResult> StartTicket([FromRoute] Guid id, [FromBody] Guid userId)
+        [HttpPut("{id}/start/{userId}")]
+        public async Task<IActionResult> StartTicket([FromRoute] Guid id, [FromRoute] Guid userId)
         {
             await _ticketsService.Start(id, userId);
             return Ok();
         }
 
-        [HttpPut("{id}/finish")]
-        public async Task<IActionResult> FinishTicket([FromRoute] Guid id, [FromBody] Guid userId)
+        [HttpPut("{id}/finish/{userId}")]
+        public async Task<IActionResult> FinishTicket([FromRoute] Guid id, [FromRoute] Guid userId)
         {
             await _ticketsService.Finish(id, userId);
             return Ok();

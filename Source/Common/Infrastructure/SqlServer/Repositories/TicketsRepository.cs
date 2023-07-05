@@ -22,6 +22,7 @@ namespace Common.Infrastructure.SqlServer.Repositories
                     Title = x.Title,
                     Description = x.Description,
                     Status = x.Status.GetDescription(),
+                    Room = x.Room,
                 }).ToListAsync();
         }
     }

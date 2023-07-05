@@ -4,6 +4,7 @@ namespace API.DTOs.Responses
 {
     public class LoginResponse
     {
+        public string Name { get; init; }
         public string UserType { get; init; }
         public Guid? UserId { get; init; }
         public bool IsSuccess { get; init; }
@@ -13,6 +14,7 @@ namespace API.DTOs.Responses
             UserId = successLoginDto.UserId,
             UserType = successLoginDto.UserType,
             IsSuccess = successLoginDto.IsSuccess,
+            Name = successLoginDto.Name,
         };
     }
 }

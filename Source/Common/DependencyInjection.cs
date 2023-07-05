@@ -1,4 +1,5 @@
-﻿using Common.Application.Services.Tickets;
+﻿using Common.Application.Services.Rooms;
+using Common.Application.Services.Tickets;
 using Common.Application.Services.Users;
 using Common.Configurations;
 using Common.Domain;
@@ -26,6 +27,7 @@ namespace Common
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITicketsService, TicketsService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IRoomsService, RoomsService>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ITicketsRepository, TicketsRepository>();
         }

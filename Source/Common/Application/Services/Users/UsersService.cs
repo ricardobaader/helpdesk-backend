@@ -37,6 +37,7 @@ namespace Common.Application.Services.Users
 
             return new SuccessLoginDto()
             {
+                Name = user.Name,
                 UserId = user.Id,
                 UserType = user.UserType.GetDescription(),
                 IsSuccess = true
