@@ -13,18 +13,20 @@ namespace Common.Infrastructure.SqlServer.Mappings
 
         protected override string TableName => "rooms";
 
+        protected override void MapProperties()
+        {
+            Builder.Property(x => x.Name).HasColumnName("name").IsRequired();
+            Builder.Property(x => x.Description).HasColumnName("description").IsRequired();
+        }
+
         protected override void MapForeignKeys()
         {
+            Builder.HasMany(x => x.Tickets);
         }
 
         protected override void MapIndexes()
         {
             Builder.HasIndex(f => new { f.Id, f.IsDeleted }).IsUnique();
-        }
-
-        protected override void MapProperties()
-        {
-            Builder.Property(x => x.Name).HasColumnName("name").IsRequired();
         }
     }
 }

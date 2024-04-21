@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Common.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230704023213_Initial")]
+    [Migration("20240421012219_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -33,6 +33,15 @@ namespace Common.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit")
                         .HasColumnName("is_deleted");
@@ -52,64 +61,118 @@ namespace Common.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b6838ce3-9e09-4b88-a379-587647b9adfb"),
+                            Id = new Guid("a3201571-2643-4efb-a020-23969f6b4d57"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4868),
+                            Description = "Sala de Aula - Física Avançada",
                             IsDeleted = false,
                             Name = "A1"
                         },
                         new
                         {
-                            Id = new Guid("59fd13c4-db67-441f-8f07-e91c53288c56"),
+                            Id = new Guid("c97635e5-8c18-429e-8831-46a5a0a3d5f4"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4871),
+                            Description = "Laboratório de Química Orgânica",
                             IsDeleted = false,
                             Name = "A2"
                         },
                         new
                         {
-                            Id = new Guid("c21d566a-3785-493c-bcb8-9c24265885d6"),
+                            Id = new Guid("6e5cb509-c8a1-4e65-bc7c-e21312c479fc"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4875),
+                            Description = "Sala de Conferências - Ciências Sociais",
                             IsDeleted = false,
                             Name = "B1"
                         },
                         new
                         {
-                            Id = new Guid("419d345f-91f3-43b9-8de9-46b12a642fb9"),
+                            Id = new Guid("05e51fd4-e2ab-43b9-9d62-2592de23db4d"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4887),
+                            Description = "Sala de Estudo em Grupo - Matemática",
                             IsDeleted = false,
                             Name = "B2"
                         },
                         new
                         {
-                            Id = new Guid("444e105d-2891-4753-8927-e24eed8a0a30"),
+                            Id = new Guid("97967d55-1357-42ba-917d-26d13f753c0b"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4889),
+                            Description = "Auditório - Palestras de História da Arte",
                             IsDeleted = false,
                             Name = "C1"
                         },
                         new
                         {
-                            Id = new Guid("d5b5b097-251d-420b-88be-194180a9d80b"),
+                            Id = new Guid("d5d0cbd9-ed36-4a1c-9897-e2d289e7a263"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4894),
+                            Description = "Sala de Projeção - Filmes de Literatura",
                             IsDeleted = false,
                             Name = "C2"
                         },
                         new
                         {
-                            Id = new Guid("dd61a4df-2c49-44bd-a01c-9dbd50f77c02"),
+                            Id = new Guid("4a36519a-4178-4898-8bc0-470af8a26606"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4897),
+                            Description = "Sala de Seminários - Engenharia Civil",
                             IsDeleted = false,
                             Name = "D1"
                         },
                         new
                         {
-                            Id = new Guid("53f23e7c-52d5-4a81-ba69-43401fa4d55b"),
+                            Id = new Guid("73912fb7-50c0-4146-825e-d04a262bda0b"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4898),
+                            Description = "Laboratório de Informática - Desenvolvimento de Software",
                             IsDeleted = false,
                             Name = "D2"
                         },
                         new
                         {
-                            Id = new Guid("93941f7f-7f17-456d-85b1-76ddf4ebe745"),
+                            Id = new Guid("28520bf4-6548-4491-8d43-837d3c7e7fa7"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4900),
+                            Description = "Biblioteca - Estudos de Filosofia",
                             IsDeleted = false,
                             Name = "E1"
                         },
                         new
                         {
-                            Id = new Guid("39911d57-a14d-4a63-981e-b9e9b841adfa"),
+                            Id = new Guid("6e8ebf59-8dcc-42e3-afc1-fa3ce7ee68e6"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4902),
+                            Description = "Sala de Reuniões - Administração de Empresas",
                             IsDeleted = false,
                             Name = "E2"
                         });
+                });
+
+            modelBuilder.Entity("Common.Domain.TicketImages.TicketImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)")
+                        .HasColumnName("image");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ticket_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.HasIndex("Id", "IsDeleted")
+                        .IsUnique();
+
+                    b.ToTable("ticket_images", "dbo");
                 });
 
             modelBuilder.Entity("Common.Domain.Tickets.Ticket", b =>
@@ -118,6 +181,10 @@ namespace Common.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -128,14 +195,17 @@ namespace Common.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("is_deleted");
 
-                    b.Property<string>("Room")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("room");
+                    b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("room_id");
 
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
+
+                    b.Property<Guid?>("SupportUserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("support_user_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -147,6 +217,10 @@ namespace Common.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("SupportUserId");
 
                     b.HasIndex("UserId");
 
@@ -162,6 +236,10 @@ namespace Common.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_at");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -196,7 +274,8 @@ namespace Common.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e8a672fd-6a60-47b1-8768-c9acb4d6abf5"),
+                            Id = new Guid("01c5344e-1d9b-4704-88b3-aa86ac16ccef"),
+                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(5607),
                             Email = "admin@gmail.com.br",
                             IsDeleted = false,
                             Name = "admin",
@@ -205,20 +284,57 @@ namespace Common.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Common.Domain.TicketImages.TicketImage", b =>
+                {
+                    b.HasOne("Common.Domain.Tickets.Ticket", "Ticket")
+                        .WithMany("TicketImages")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("Common.Domain.Tickets.Ticket", b =>
                 {
+                    b.HasOne("Common.Domain.Rooms.Room", "Room")
+                        .WithMany("Tickets")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Common.Domain.Users.User", "SupportUser")
+                        .WithMany("UserSupportTickets")
+                        .HasForeignKey("SupportUserId");
+
                     b.HasOne("Common.Domain.Users.User", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Room");
+
+                    b.Navigation("SupportUser");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Common.Domain.Rooms.Room", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("Common.Domain.Tickets.Ticket", b =>
+                {
+                    b.Navigation("TicketImages");
                 });
 
             modelBuilder.Entity("Common.Domain.Users.User", b =>
                 {
                     b.Navigation("Tickets");
+
+                    b.Navigation("UserSupportTickets");
                 });
 #pragma warning restore 612, 618
         }

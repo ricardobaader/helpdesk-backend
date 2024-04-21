@@ -13,22 +13,23 @@ namespace Common.Infrastructure.SqlServer.Mappings
 
         protected override string TableName => "users";
 
-        protected override void MapForeignKeys()
-        {
-            Builder.HasMany(x => x.Tickets);
-        }
-
-        protected override void MapIndexes()
-        {
-            Builder.HasIndex(f => new { f.Id, f.IsDeleted }).IsUnique();
-        }
-
         protected override void MapProperties()
         {
             Builder.Property(x => x.Name).HasColumnName("name").IsRequired();
             Builder.Property(x => x.Email).HasColumnName("email").IsRequired();
             Builder.Property(x => x.Password).HasColumnName("password").IsRequired();
             Builder.Property(x => x.UserType).HasColumnName("userType").IsRequired();
+        }
+
+        protected override void MapForeignKeys()
+        {
+            Builder.HasMany(x => x.Tickets);
+            Builder.HasMany(x => x.UserSupportTickets);
+        }
+
+        protected override void MapIndexes()
+        {
+            Builder.HasIndex(f => new { f.Id, f.IsDeleted }).IsUnique();
         }
     }
 }

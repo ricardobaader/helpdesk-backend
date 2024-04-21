@@ -2,12 +2,11 @@
 using API.DTOs.Responses;
 using Common.Application.Services.Tickets;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class TicketsController : ControllerBase
+    public class TicketsController : BaseController
     {
         private readonly ITicketsService _ticketsService;
 
@@ -17,30 +16,47 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTicket([FromBody] CreateTicketRequest request)
+        public async Task<IActionResult> CreateTicket([FromForm] CreateTicketRequest request)
         {
             await _ticketsService.Create(request.ToCreateTicketDto());
             return NoContent();
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("user/{userId}")]
         public async Task<ActionResult<ListTicketsResponse>> ListTickets([FromRoute] Guid userId)
         {
-            var tickets = await _ticketsService.ListBy(userId);
+            var tickets = await _ticketsService.ListAllBy(userId);
             return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
         }
 
-        [HttpPut("{id}/start/{userId}")]
-        public async Task<IActionResult> StartTicket([FromRoute] Guid id, [FromRoute] Guid userId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult> ListTicketDetails([FromRoute] Guid id)
         {
-            await _ticketsService.Start(id, userId);
+            var ticket = await _ticketsService.ListById(id);
+            return Ok(ListTicketsResponse.ToListTicketsResponse(ticket));
+        }
+
+        [HttpPut("{id}/user/{supportUserId}:start")]
+        [SwaggerOperation("StartTicket")]
+        public async Task<IActionResult> StartTicket([FromRoute] Guid id, Guid supportUserId)
+        {
+            await _ticketsService.Start(id, supportUserId);
             return Ok();
         }
 
-        [HttpPut("{id}/finish/{userId}")]
-        public async Task<IActionResult> FinishTicket([FromRoute] Guid id, [FromRoute] Guid userId)
+        [HttpPut("{id}/user/{supportUserId}:finish")]
+        [SwaggerOperation("FinishTicket")]
+        public async Task<IActionResult> FinishTicket([FromRoute] Guid id, [FromRoute] Guid supportUserId)
         {
-            await _ticketsService.Finish(id, userId);
+            await _ticketsService.Finish(id, supportUserId);
+            return Ok();
+        }
+
+        [HttpPut("{id}/user/{userId}:close")]
+        [SwaggerOperation("CloseTicket")]
+        public async Task<IActionResult> CloseTicket([FromRoute] Guid id, [FromRoute] Guid userId)
+        {
+            await _ticketsService.Close(id, userId);
             return Ok();
         }
 

@@ -17,14 +17,10 @@ namespace Common.Infrastructure.SqlServer.Mappings
         {
             Builder.Property(x => x.Title).HasColumnName("title").IsRequired();
             Builder.Property(x => x.Description).HasColumnName("description").IsRequired();
-            Builder.Property(x => x.Room).HasColumnName("room").IsRequired();
             Builder.Property(x => x.UserId).HasColumnName("user_id").IsRequired();
+            Builder.Property(x => x.SupportUserId).HasColumnName("support_user_id").IsRequired(false);
+            Builder.Property(x => x.RoomId).HasColumnName("room_id").IsRequired();
             Builder.Property(x => x.Status).HasColumnName("status").IsRequired();
-        }
-
-        protected override void MapIndexes()
-        {
-            Builder.HasIndex(f => new { f.Id, f.IsDeleted }).IsUnique();
         }
 
         protected override void MapForeignKeys()
@@ -32,6 +28,21 @@ namespace Common.Infrastructure.SqlServer.Mappings
             Builder.HasOne(x => x.User)
                .WithMany(x => x.Tickets)
                .HasForeignKey(x => x.UserId);
+
+            Builder.HasOne(x => x.Room)
+               .WithMany(x => x.Tickets)
+               .HasForeignKey(x => x.RoomId);
+
+            Builder.HasOne(x => x.SupportUser)
+               .WithMany(x => x.UserSupportTickets)
+               .HasForeignKey(x => x.SupportUserId);
+
+            Builder.HasMany(x => x.TicketImages);
+        }
+
+        protected override void MapIndexes()
+        {
+            Builder.HasIndex(f => new { f.Id, f.IsDeleted }).IsUnique();
         }
     }
 }

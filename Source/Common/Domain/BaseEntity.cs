@@ -5,6 +5,7 @@ namespace Common.Domain
     public class BaseEntity
     {
         public Guid Id { get; set; }
+        public DateTime CreatedAt { get; private set; }
         public bool IsDeleted { get; private set; }
 #pragma warning disable S1104
         [JsonIgnore] public List<string> Errors = new();
@@ -14,6 +15,7 @@ namespace Common.Domain
         protected void SetBaseProperties()
         {
             Id = Guid.NewGuid();
+            CreatedAt = DateTime.UtcNow;
             IsDeleted = false;
         }
 

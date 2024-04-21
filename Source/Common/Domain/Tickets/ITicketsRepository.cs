@@ -2,6 +2,6 @@
 {
     public interface ITicketsRepository : IBaseEntityRepository<Ticket>
     {
-        Task<IEnumerable<ListTicketsDto>> ListTicketsBy(Guid userId);
+        Task<IEnumerable<ListTicketsDto>> ListAllTicketsBy(Guid userId);
     }
 }

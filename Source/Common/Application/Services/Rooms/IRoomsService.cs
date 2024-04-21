@@ -1,7 +1,11 @@
-﻿namespace Common.Application.Services.Rooms
+﻿using Common.Domain.Rooms;
+
+namespace Common.Application.Services.Rooms
 {
     public interface IRoomsService
     {
-        IEnumerable<string> GetRooms();
+        IEnumerable<ListRoomDto> GetRooms();
+        Task Create(CreateRoomDto request);
+        Task Update(Guid id, UpdateRoomDto request);
     }
 }

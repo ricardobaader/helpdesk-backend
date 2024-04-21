@@ -9,21 +9,20 @@ namespace Common.Utils.Extensions
         public static void Seed(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Room>().HasData(
-                new Room { Name = "A1" },
-                new Room { Name = "A2" },
-                new Room { Name = "B1" },
-                new Room { Name = "B2" },
-                new Room { Name = "C1" },
-                new Room { Name = "C2" },
-                new Room { Name = "D1" },
-                new Room { Name = "D2" },
-                new Room { Name = "E1" },
-                new Room { Name = "E2" }
-                );
+                new Room("A1", "Sala de Aula - Física Avançada"),
+                new Room("A2", "Laboratório de Química Orgânica"),
+                new Room("B1", "Sala de Conferências - Ciências Sociais"),
+                new Room("B2", "Sala de Estudo em Grupo - Matemática"),
+                new Room("C1", "Auditório - Palestras de História da Arte"),
+                new Room("C2", "Sala de Projeção - Filmes de Literatura"),
+                new Room("D1", "Sala de Seminários - Engenharia Civil"),
+                new Room("D2", "Laboratório de Informática - Desenvolvimento de Software"),
+                new Room("E1", "Biblioteca - Estudos de Filosofia"),
+                new Room("E2", "Sala de Reuniões - Administração de Empresas")
+            );
 
             modelBuilder.Entity<User>().HasData(
-                new User("admin", "admin@gmail.com.br", "admin123", UserType.Admin)
-                );
+                new User("admin", "admin@gmail.com.br", "admin123", UserType.Admin));
         }
     }
 }

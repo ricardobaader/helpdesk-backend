@@ -11,8 +11,12 @@ namespace Common.Domain.Users
         public string Email { get; private set; }
         public string Password { get; private set; }
         public UserType UserType { get; private set; }
+
         private readonly IList<Ticket> _tickets = new List<Ticket>();
         [JsonIgnore] public virtual ICollection<Ticket> Tickets => _tickets;
+
+        private readonly IList<Ticket> _userSupportTickets = new List<Ticket>();
+        [JsonIgnore] public virtual ICollection<Ticket> UserSupportTickets => _userSupportTickets;
 
         public User(string name, string email, string password, UserType userType)
         {

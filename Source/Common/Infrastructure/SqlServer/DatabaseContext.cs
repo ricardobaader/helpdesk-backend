@@ -1,4 +1,5 @@
 ﻿using Common.Domain.Rooms;
+using Common.Domain.TicketImages;
 using Common.Domain.Tickets;
 using Common.Domain.Users;
 using Common.Infrastructure.SqlServer.Mappings;
@@ -20,6 +21,7 @@ namespace Common.Infrastructure.SqlServer
             modelBuilder.HasDefaultSchema("dbo");
 
             _ = new TicketMapping(modelBuilder.Entity<Ticket>());
+            _ = new TicketImageMapping(modelBuilder.Entity<TicketImage>());
             _ = new UserMapping(modelBuilder.Entity<User>());
             _ = new RoomMapping(modelBuilder.Entity<Room>());
 

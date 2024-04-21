@@ -1,4 +1,5 @@
-﻿using Common.Application.Services.Rooms;
+﻿using Common.Application.Services.Email;
+using Common.Application.Services.Rooms;
 using Common.Application.Services.Tickets;
 using Common.Application.Services.Users;
 using Common.Configurations;
@@ -24,6 +25,8 @@ namespace Common
 
         internal static void AddServices(this IServiceCollection services)
         {
+            services.AddTransient<IEmailSenderService, EmailSenderService>();
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITicketsService, TicketsService>();
             services.AddScoped<IUsersService, UsersService>();

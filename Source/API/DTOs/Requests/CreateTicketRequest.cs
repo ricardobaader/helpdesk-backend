@@ -6,16 +6,20 @@ namespace API.DTOs.Requests
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Room { get; set; }
+        public Guid RoomId { get; set; }
         public Guid UserId { get; set; }
+        public List<IFormFile> Images { get; set; }
 
-
-        public CreateTicketDto ToCreateTicketDto() => new()
+        public CreateTicketDto ToCreateTicketDto()
         {
-            Title = Title,
-            Description = Description,
-            Room = Room,
-            UserId = UserId
-        };
+            return new()
+            {
+                Title = Title,
+                Description = Description,
+                RoomId = RoomId,
+                UserId = UserId,
+                Images = Images
+            };
+        }
     }
 }

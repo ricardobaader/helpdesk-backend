@@ -8,7 +8,9 @@ namespace Common.Domain.Tickets
         Pending = 0,
         [Description("Em Progresso")]
         InProgress = 1,
-        [Description("Finalizado")]
-        Finished = 2
+        [Description("Resolvido")]
+        Finished = 2,
+        [Description("Encerrado")]
+        Closed = 3
     }
 }
