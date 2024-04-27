@@ -44,17 +44,21 @@ namespace Common.Domain.Tickets
 
         public void StartTicket(Guid supportUserId)
         {
+            SetUpdate();
             Status = TicketStatus.InProgress;
             SupportUserId = supportUserId;
         }
 
-        public void FinishTicket() => 
-            Status = TicketStatus.Finished;
+        public void FinishTicket()
+        {
+            SetUpdate();
+            Status = TicketStatus.Solved;
+        }
 
         public void CloseTicket()
         {
-            Status = TicketStatus.Closed;
             SetDelete();
+            Status = TicketStatus.Closed;
         }
 
         private void ValidateInfo(string title, string description, Guid roomId, Guid userId) => Errors = EntityValidator.New()

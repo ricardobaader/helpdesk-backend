@@ -9,7 +9,7 @@ namespace Common.Domain.Tickets
         [Description("Em Progresso")]
         InProgress = 1,
         [Description("Resolvido")]
-        Finished = 2,
+        Solved = 2,
         [Description("Encerrado")]
         Closed = 3
     }

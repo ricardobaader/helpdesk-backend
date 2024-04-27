@@ -3,6 +3,7 @@ using Common.Domain.Tickets;
 using Common.Infrastructure.SqlServer.Common;
 using Common.Utils.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Common.Infrastructure.SqlServer.Repositories
 {
@@ -11,6 +12,8 @@ namespace Common.Infrastructure.SqlServer.Repositories
         public TicketsRepository(DatabaseContext context) : base(context)
         {
         }
+
+        private const int DaysToWaitBeforeClosing = 7;
 
         public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsBy(Guid userId)
         {
@@ -32,6 +35,17 @@ namespace Common.Infrastructure.SqlServer.Repositories
                         Desciption = x.Room.Description,
                     }
                 }).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Ticket>> ListAllSolvedTickets()
+        {
+            return await Entity
+                .Include(x => x.User)
+                .Where(x => x.Status == TicketStatus.Solved &&
+                            x.LastUpdatedAt.AddDays(DaysToWaitBeforeClosing) <= DateTime.UtcNow &&
+                            !x.IsDeleted)
+                .ToListAsync();
+
         }
     }
 }

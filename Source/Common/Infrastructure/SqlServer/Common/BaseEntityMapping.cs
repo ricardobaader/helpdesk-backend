@@ -36,8 +36,9 @@ namespace Common.Infrastructure.SqlServer.Common
         private void MapBaseProperties()
         {
             Builder.Property(x => x.Id).HasColumnName("id").IsRequired();
-            Builder.Property(x => x.IsDeleted).HasColumnName("is_deleted").IsRequired();
             Builder.Property(x => x.CreatedAt).HasColumnName("created_at").IsRequired();
+            Builder.Property(x => x.LastUpdatedAt).HasColumnName("last_updated_at").IsRequired();
+            Builder.Property(x => x.IsDeleted).HasColumnName("is_deleted").IsRequired();
             Builder.Ignore(x => x.Errors);
         }
 

@@ -28,11 +28,15 @@ namespace Common
             services.AddTransient<IEmailSenderService, EmailSenderService>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<ITicketsService, TicketsService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IRoomsService, RoomsService>();
+            services.AddHostedService<CloseTicketService>();
+
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ITicketsRepository, TicketsRepository>();
+
         }
 
         internal static void AddSqlServer(this IServiceCollection services, IConfiguration configuration)

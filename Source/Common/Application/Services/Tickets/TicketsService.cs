@@ -157,8 +157,8 @@ namespace Common.Application.Services.Tickets
             if (user.UserType != UserType.User)
                 throw new InvalidDataException("Somente um funcionário da equipe de suporte pode alterar um chamado");
 
-            if (ticket.Status != TicketStatus.Finished)
-                throw new InvalidDataException("Somente chamados em finalizados podem ser encerrados");
+            if (ticket.Status != TicketStatus.Solved)
+                throw new InvalidDataException("Somente chamados em resolvidos podem ser encerrados");
 
             ticket.CloseTicket();
 
@@ -207,7 +207,7 @@ namespace Common.Application.Services.Tickets
                 <p><b>Novo Status: </b>{ticket.Status.GetDescription()}</p>
                 <p>Para acompanhar o seu chamado, aperte o botão abaixo:</p>
                 <p><a href='#' class='btn'>Clique Aqui</a></p>
-                <p>Qualquer dúvida estamos a disposição!.</p>";
+                <p>Estamos à disposição para qualquer dúvida!</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);
         }

@@ -6,19 +6,30 @@ namespace Common.Domain
     {
         public Guid Id { get; set; }
         public DateTime CreatedAt { get; private set; }
+        public DateTime LastUpdatedAt { get; private set; }
+
         public bool IsDeleted { get; private set; }
-#pragma warning disable S1104
-        [JsonIgnore] public List<string> Errors = new();
-#pragma warning restore S1104
+
+        [JsonIgnore]
+        public List<string> Errors = new();
+
         public bool IsValid => Errors.Count == 0;
 
         protected void SetBaseProperties()
         {
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;
+            LastUpdatedAt = CreatedAt;
             IsDeleted = false;
         }
 
-        public void SetDelete() => IsDeleted = true;
+        protected void SetUpdate()
+            => LastUpdatedAt = DateTime.UtcNow;
+
+        public void SetDelete()
+        {
+            LastUpdatedAt = DateTime.UtcNow;
+            IsDeleted = true;
+        }
     }
 }
