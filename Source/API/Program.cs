@@ -1,21 +1,21 @@
 using API.Middlewares;
 using Common;
+using Common.Application.ChatHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCommon(builder.Configuration);  
+builder.Services.AddCommon(builder.Configuration);
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>()
     .UseMiddleware<UnitOfWorkMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,7 +31,8 @@ app.UseCors(builder => builder
     .AllowCredentials());
 
 app.UseAuthorization();
-
 app.MapControllers();
+
+app.MapHub<ChatHub>("/Chat");
 
 app.Run();

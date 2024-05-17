@@ -1,4 +1,5 @@
-﻿using Common.Domain.Rooms;
+﻿using Common.Domain.Chats;
+using Common.Domain.Rooms;
 using Common.Domain.TicketImages;
 using Common.Domain.Users;
 using Common.Utils;
@@ -26,6 +27,11 @@ namespace Common.Domain.Tickets
 
         private readonly IList<TicketImage> _ticketImages = new List<TicketImage>();
         [JsonIgnore] public virtual ICollection<TicketImage> TicketImages => _ticketImages;
+
+        private readonly IList<Chat> _chats = new List<Chat>();
+        [JsonIgnore] public virtual ICollection<Chat> Chats => _chats;
+
+        protected Ticket() { }
 
         public Ticket(string title, string description, Guid roomId, Guid userId)
         {

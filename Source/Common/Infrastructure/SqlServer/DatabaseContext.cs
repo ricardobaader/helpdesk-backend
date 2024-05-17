@@ -1,4 +1,5 @@
-﻿using Common.Domain.Rooms;
+﻿using Common.Domain.Chats;
+using Common.Domain.Rooms;
 using Common.Domain.TicketImages;
 using Common.Domain.Tickets;
 using Common.Domain.Users;
@@ -24,6 +25,7 @@ namespace Common.Infrastructure.SqlServer
             _ = new TicketImageMapping(modelBuilder.Entity<TicketImage>());
             _ = new UserMapping(modelBuilder.Entity<User>());
             _ = new RoomMapping(modelBuilder.Entity<Room>());
+            _ = new ChatMapping(modelBuilder.Entity<Chat>());
 
             modelBuilder.Seed();
         }

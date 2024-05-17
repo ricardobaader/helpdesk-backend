@@ -1,4 +1,5 @@
-﻿using Common.Domain.Tickets;
+﻿using Common.Domain.Chats;
+using Common.Domain.Tickets;
 using Common.Utils;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -17,6 +18,9 @@ namespace Common.Domain.Users
 
         private readonly IList<Ticket> _userSupportTickets = new List<Ticket>();
         [JsonIgnore] public virtual ICollection<Ticket> UserSupportTickets => _userSupportTickets;
+
+        private readonly IList<Chat> _chats = new List<Chat>();
+        [JsonIgnore] public virtual ICollection<Chat> Chats => _chats;
 
         public User(string name, string email, string password, UserType userType)
         {

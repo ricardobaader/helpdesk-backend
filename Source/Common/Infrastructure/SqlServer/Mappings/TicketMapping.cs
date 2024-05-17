@@ -38,6 +38,7 @@ namespace Common.Infrastructure.SqlServer.Mappings
                .HasForeignKey(x => x.SupportUserId);
 
             Builder.HasMany(x => x.TicketImages);
+            Builder.HasMany(x => x.Chats);
         }
 
         protected override void MapIndexes()

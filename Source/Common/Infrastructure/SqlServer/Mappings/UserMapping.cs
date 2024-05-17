@@ -25,6 +25,7 @@ namespace Common.Infrastructure.SqlServer.Mappings
         {
             Builder.HasMany(x => x.Tickets);
             Builder.HasMany(x => x.UserSupportTickets);
+            Builder.HasMany(x => x.Chats);
         }
 
         protected override void MapIndexes()

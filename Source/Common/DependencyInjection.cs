@@ -4,6 +4,7 @@ using Common.Application.Services.Tickets;
 using Common.Application.Services.Users;
 using Common.Configurations;
 using Common.Domain;
+using Common.Domain.Chats;
 using Common.Domain.Tickets;
 using Common.Domain.Users;
 using Common.Infrastructure.SqlServer;
@@ -36,6 +37,7 @@ namespace Common
 
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ITicketsRepository, TicketsRepository>();
+            services.AddScoped<IChatsRepository, ChatRepository>();
 
         }
 
