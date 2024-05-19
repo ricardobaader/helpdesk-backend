@@ -3,16 +3,16 @@ using System;
 using Common.Infrastructure.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Common.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240421012219_Initial")]
+    [Migration("20240517200051_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -22,33 +22,81 @@ namespace Common.Migrations
             modelBuilder
                 .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "7.0.8")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Common.Domain.Chats.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_updated_at");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("message");
+
+                    b.Property<Guid>("TicketId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ticket_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("Id", "IsDeleted")
+                        .IsUnique();
+
+                    b.ToTable("chat_messages", "dbo");
+                });
 
             modelBuilder.Entity("Common.Domain.Rooms.Room", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_updated_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -61,82 +109,92 @@ namespace Common.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a3201571-2643-4efb-a020-23969f6b4d57"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4868),
+                            Id = new Guid("0c4dc28c-6da2-4f9a-9988-4f2f91184411"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8779),
                             Description = "Sala de Aula - Física Avançada",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8779),
                             Name = "A1"
                         },
                         new
                         {
-                            Id = new Guid("c97635e5-8c18-429e-8831-46a5a0a3d5f4"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4871),
+                            Id = new Guid("e95114c2-fa39-445f-9b4b-6daf3bdde121"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8790),
                             Description = "Laboratório de Química Orgânica",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8790),
                             Name = "A2"
                         },
                         new
                         {
-                            Id = new Guid("6e5cb509-c8a1-4e65-bc7c-e21312c479fc"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4875),
+                            Id = new Guid("916ab47c-8152-4da8-9f07-aa86f1deebe1"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8796),
                             Description = "Sala de Conferências - Ciências Sociais",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8796),
                             Name = "B1"
                         },
                         new
                         {
-                            Id = new Guid("05e51fd4-e2ab-43b9-9d62-2592de23db4d"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4887),
+                            Id = new Guid("01e790b9-cf98-434f-938b-8cb35fe1cd2f"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8801),
                             Description = "Sala de Estudo em Grupo - Matemática",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8801),
                             Name = "B2"
                         },
                         new
                         {
-                            Id = new Guid("97967d55-1357-42ba-917d-26d13f753c0b"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4889),
+                            Id = new Guid("3c98991a-13f6-4915-bb7d-0ea7fc30628d"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8805),
                             Description = "Auditório - Palestras de História da Arte",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8805),
                             Name = "C1"
                         },
                         new
                         {
-                            Id = new Guid("d5d0cbd9-ed36-4a1c-9897-e2d289e7a263"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4894),
+                            Id = new Guid("6bde5fa1-b7c3-4db0-8c4a-145f50e2853f"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8828),
                             Description = "Sala de Projeção - Filmes de Literatura",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8828),
                             Name = "C2"
                         },
                         new
                         {
-                            Id = new Guid("4a36519a-4178-4898-8bc0-470af8a26606"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4897),
+                            Id = new Guid("e3b4a787-d2c6-41a4-8495-ca73efb58b8f"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8834),
                             Description = "Sala de Seminários - Engenharia Civil",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8834),
                             Name = "D1"
                         },
                         new
                         {
-                            Id = new Guid("73912fb7-50c0-4146-825e-d04a262bda0b"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4898),
+                            Id = new Guid("7cf046c2-40b2-4b63-b097-eb88f08fbb88"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8838),
                             Description = "Laboratório de Informática - Desenvolvimento de Software",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8838),
                             Name = "D2"
                         },
                         new
                         {
-                            Id = new Guid("28520bf4-6548-4491-8d43-837d3c7e7fa7"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4900),
+                            Id = new Guid("749d0d36-265d-4a58-bb1d-a26a5dc33619"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8843),
                             Description = "Biblioteca - Estudos de Filosofia",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8843),
                             Name = "E1"
                         },
                         new
                         {
-                            Id = new Guid("6e8ebf59-8dcc-42e3-afc1-fa3ce7ee68e6"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(4902),
+                            Id = new Guid("c0271f70-2609-4d2d-b9db-2d5542359048"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8847),
                             Description = "Sala de Reuniões - Administração de Empresas",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8847),
                             Name = "E2"
                         });
                 });
@@ -145,24 +203,28 @@ namespace Common.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<byte[]>("Image")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)")
+                        .HasColumnType("bytea")
                         .HasColumnName("image");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_updated_at");
+
                     b.Property<Guid>("TicketId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("ticket_id");
 
                     b.HasKey("Id");
@@ -179,41 +241,45 @@ namespace Common.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_updated_at");
+
                     b.Property<Guid>("RoomId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("room_id");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("status");
 
                     b.Property<Guid?>("SupportUserId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("support_user_id");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("title");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
@@ -234,34 +300,38 @@ namespace Common.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
+                        .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("email");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit")
+                        .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<DateTime>("LastUpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_updated_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("text")
                         .HasColumnName("password");
 
                     b.Property<int>("UserType")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("userType");
 
                     b.HasKey("Id");
@@ -274,14 +344,34 @@ namespace Common.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("01c5344e-1d9b-4704-88b3-aa86ac16ccef"),
-                            CreatedAt = new DateTime(2024, 4, 21, 1, 22, 19, 797, DateTimeKind.Utc).AddTicks(5607),
+                            Id = new Guid("d05c7c01-8786-46c1-a03b-87808caa1e54"),
+                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 143, DateTimeKind.Utc).AddTicks(436),
                             Email = "admin@gmail.com.br",
                             IsDeleted = false,
+                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 143, DateTimeKind.Utc).AddTicks(436),
                             Name = "admin",
                             Password = "admin123",
                             UserType = 2
                         });
+                });
+
+            modelBuilder.Entity("Common.Domain.Chats.Chat", b =>
+                {
+                    b.HasOne("Common.Domain.Tickets.Ticket", "Ticket")
+                        .WithMany("Chats")
+                        .HasForeignKey("TicketId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Common.Domain.Users.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Common.Domain.TicketImages.TicketImage", b =>
@@ -327,11 +417,15 @@ namespace Common.Migrations
 
             modelBuilder.Entity("Common.Domain.Tickets.Ticket", b =>
                 {
+                    b.Navigation("Chats");
+
                     b.Navigation("TicketImages");
                 });
 
             modelBuilder.Entity("Common.Domain.Users.User", b =>
                 {
+                    b.Navigation("Chats");
+
                     b.Navigation("Tickets");
 
                     b.Navigation("UserSupportTickets");

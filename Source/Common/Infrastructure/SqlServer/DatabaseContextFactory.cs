@@ -13,7 +13,7 @@ namespace Common.Infrastructure.SqlServer
         {
             var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
 
-            optionsBuilder.UseSqlServer();
+            optionsBuilder.UseNpgsql();
 
             return new DatabaseContext(optionsBuilder.Options);
         }

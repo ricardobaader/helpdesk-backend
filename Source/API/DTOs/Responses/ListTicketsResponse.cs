@@ -16,17 +16,20 @@ namespace API.DTOs.Responses
 
         public static ListTicketsResponse ToListTicketsResponse(ListTicketsDto listTicketsDto)
         {
-            return new()
-            {
-                Code = listTicketsDto.Code,
-                Title = listTicketsDto.Title,
-                Description = listTicketsDto.Description,
-                Status = listTicketsDto.Status,
-                Responsible = listTicketsDto.Responsible,
-                CreatedAt = listTicketsDto.CreatedAt,
-                Room = listTicketsDto.RoomDto,
-                ImagesBase64 = listTicketsDto.Images?.Select(x => Convert.ToBase64String(x)).ToList(),
-            };
+            if (listTicketsDto != null)
+                return new()
+                {
+                    Code = listTicketsDto.Code,
+                    Title = listTicketsDto.Title,
+                    Description = listTicketsDto.Description,
+                    Status = listTicketsDto.Status,
+                    Responsible = listTicketsDto.Responsible,
+                    CreatedAt = listTicketsDto.CreatedAt,
+                    Room = listTicketsDto.RoomDto,
+                    ImagesBase64 = listTicketsDto.Images?.Select(x => Convert.ToBase64String(x)).ToList(),
+                };
+
+            return default;
         }
     }
 }

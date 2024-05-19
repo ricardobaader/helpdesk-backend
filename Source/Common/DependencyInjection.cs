@@ -20,7 +20,7 @@ namespace Common
     {
         public static void AddCommon(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSqlServer(configuration);
+            services.AddPostgresConfig(configuration);
             services.AddServices();
         }
 
@@ -41,11 +41,11 @@ namespace Common
 
         }
 
-        internal static void AddSqlServer(this IServiceCollection services, IConfiguration configuration)
+        internal static void AddPostgresConfig(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.SqlServerConnectionString();
             services.AddDbContext<DatabaseContext>(options =>
-                options.UseSqlServer(connectionString, action =>
+                options.UseNpgsql(connectionString, action =>
                 {
                     action.MigrationsAssembly("Common");
                     action.EnableRetryOnFailure();
