@@ -10,6 +10,11 @@ WORKDIR /app
 
 COPY --from=publish /app .
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    libgdiplus \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN rm -rf Common
 
 ENTRYPOINT ["dotnet", "API.dll"]
