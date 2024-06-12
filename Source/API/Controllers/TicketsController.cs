@@ -18,8 +18,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTicket([FromForm] CreateTicketRequest request)
         {
-            await _ticketsService.Create(request.ToCreateTicketDto());
-            return NoContent();
+            var ticketId = await _ticketsService.Create(request.ToCreateTicketDto());
+            return Created(string.Empty, ticketId);
         }
 
         [HttpGet("user/{userId}")]
@@ -33,6 +33,10 @@ namespace API.Controllers
         public async Task<ActionResult> ListTicketDetails([FromRoute] Guid id)
         {
             var ticket = await _ticketsService.ListById(id);
+
+            if (ticket is null)
+                return NotFound(string.Empty);
+
             return Ok(ListTicketsResponse.ToListTicketsResponse(ticket));
         }
 

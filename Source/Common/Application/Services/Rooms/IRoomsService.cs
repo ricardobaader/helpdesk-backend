@@ -5,7 +5,10 @@ namespace Common.Application.Services.Rooms
     public interface IRoomsService
     {
         IEnumerable<ListRoomDto> GetRooms();
-        Task Create(CreateRoomDto request);
+        Task<Guid> Create(CreateRoomDto request);
         Task Update(Guid id, UpdateRoomDto request);
+        Task Delete(Guid id);
+        Task<ListRoomDto> ListById(Guid roomId);
+        Task<string> ListSpecificRoomQRCode(Guid roomId);
     }
 }

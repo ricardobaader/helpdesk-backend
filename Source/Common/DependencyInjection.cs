@@ -43,7 +43,7 @@ namespace Common
 
         internal static void AddPostgresConfig(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.SqlServerConnectionString();
+            var connectionString = configuration.PostgreSqlConnectionString();
             services.AddDbContext<DatabaseContext>(options =>
                 options.UseNpgsql(connectionString, action =>
                 {

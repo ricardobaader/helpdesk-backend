@@ -10,16 +10,14 @@ namespace Common.Application.Services.Email
             if (Environment.GetEnvironmentVariable("SEND_EMAIL") == "false")
                 return;
 
-            var mail = "dudu245@live.com";
-            var pw = "123";
+            var mail = "suportehelpdesksenai@gmail.com";
+            var pw = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
 
-            var client = new SmtpClient("smtp-mail.outlook.com", 587)
+            var client = new SmtpClient("smtp.gmail.com", 587)
             {
                 EnableSsl = true,
                 Credentials = new NetworkCredential(mail, pw)
             };
-
-            email = "niyekep438@etopys.com";
 
             string htmlMessage = $@"
             <html>

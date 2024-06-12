@@ -4,7 +4,7 @@ namespace Common.Application.Services.Tickets
 {
     public interface ITicketsService
     {
-        Task Create(CreateTicketDto request);
+        Task<Guid> Create(CreateTicketDto request);
         Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId);
         Task<ListTicketsDto> ListById(Guid ticketId);
         Task Start(Guid id, Guid supportUserId);

@@ -12,6 +12,8 @@ namespace Common.Application.Services.Tickets
 {
     internal class TicketsService : ITicketsService
     {
+        private readonly  string frontendBaseUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
+
         private readonly ITicketsRepository _ticketsRepository;
         private readonly IBaseEntityRepository<User> _usersRepository;
         private readonly IBaseEntityRepository<Room> _roomsRepository;
@@ -31,7 +33,7 @@ namespace Common.Application.Services.Tickets
             _ticketImagesRepository = ticketImagesRepository;
         }
 
-        public async Task Create(CreateTicketDto request)
+        public async Task<Guid> Create(CreateTicketDto request)
         {
             var roomId = await _roomsRepository.ProjectOneBy(x => x.Id, x => x.Id == request.RoomId && !x.IsDeleted);
             if (roomId == Guid.Empty)
@@ -60,13 +62,15 @@ namespace Common.Application.Services.Tickets
             var subject = "Chamado criado com Sucesso!";
             var message = @$"
                 <p>Olá {user.Name},</p>
-                <p>Seu chamado foi criado com sucesso e recebido por nosso sistema e está na fila para ser atendido.</p>
+                <p>Seu chamado <b>{ticket.Title}</b> foi criado com sucesso e recebido por nosso sistema e está na fila para ser atendido.</p>
                 <p>Caso necessário, entraremos em contato para obter mais informações a respeito do problema.</p>
                 <p>Para acompanhar o status do chamado, aperte o botão abaixo:</p>
-                <p><a href='#' class='btn'>Clique Aqui</a></p>
+                <p><a href='{frontendBaseUrl}' class='btn'>Clique Aqui</a></p>
                 <p>Obrigado por contribuir pela melhoria de nossa Universidade.</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);
+
+            return ticket.Id;
         }
 
         public async Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId)
@@ -80,7 +84,8 @@ namespace Common.Application.Services.Tickets
 
             return await _ticketsRepository.ProjectManyBy(x => new ListTicketsDto
             {
-                Code = x.Id,
+                Id = x.Id,
+                Number = x.Number,
                 Title = x.Title,
                 Description = x.Description,
                 Status = x.Status.GetDescription(),
@@ -90,7 +95,7 @@ namespace Common.Application.Services.Tickets
                 {
                     Id = x.RoomId,
                     Name = x.Room.Name,
-                    Desciption = x.Room.Description,
+                    Description = x.Room.Description,
                 }
             }, x => !x.IsDeleted);
         }
@@ -99,8 +104,9 @@ namespace Common.Application.Services.Tickets
         {
             return await _ticketsRepository.ProjectOneBy(x => new ListTicketsDto
             {
-                Code = x.Id,
+                Id = x.Id,
                 Title = x.Title,
+                Number = x.Number,
                 Description = x.Description,
                 Status = x.Status.GetDescription(),
                 CreatedAt = x.CreatedAt,
@@ -109,7 +115,7 @@ namespace Common.Application.Services.Tickets
                 {
                     Id = x.RoomId,
                     Name = x.Room.Name,
-                    Desciption = x.Room.Description,
+                    Description = x.Room.Description,
                 },
                 Images = x.TicketImages.Select(x => x.Image).ToList(),
             }, x => x.Id == ticketId);
@@ -167,7 +173,6 @@ namespace Common.Application.Services.Tickets
             await SendTicketStatusUpdateEmailAsync(ticket, user);
         }
 
-        // Somente o próprio usuário poderá excluir o chamado
         public async Task Delete(Guid id)
         {
             var ticket = await _ticketsRepository.SelectOneBy(x => x.Id == id && !x.IsDeleted);
@@ -200,13 +205,13 @@ namespace Common.Application.Services.Tickets
 
         private async Task SendTicketStatusUpdateEmailAsync(Ticket ticket, User user)
         {
-            var subject = "Status do Chamado foi Atualizado!";
+            var subject = $"Status do Chamado {ticket.Number} foi Atualizado!";
             var message = @$"
                 <p>Olá {user.Name},</p>
                 <p>O status do seu chamado foi atualizado.</p>
                 <p><b>Novo Status: </b>{ticket.Status.GetDescription()}</p>
                 <p>Para acompanhar o seu chamado, aperte o botão abaixo:</p>
-                <p><a href='#' class='btn'>Clique Aqui</a></p>
+                <p><a href='{frontendBaseUrl}' class='btn'>Clique Aqui</a></p>
                 <p>Estamos à disposição para qualquer dúvida!</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);

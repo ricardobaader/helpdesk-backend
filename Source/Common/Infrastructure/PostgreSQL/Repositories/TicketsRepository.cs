@@ -9,11 +9,11 @@ namespace Common.Infrastructure.SqlServer.Repositories
 {
     public class TicketsRepository : BaseEntityRepository<Ticket>, ITicketsRepository
     {
+        private const int DaysToWaitBeforeClosing = 7;
+
         public TicketsRepository(DatabaseContext context) : base(context)
         {
         }
-
-        private const int DaysToWaitBeforeClosing = 7;
 
         public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsBy(Guid userId)
         {
@@ -22,7 +22,8 @@ namespace Common.Infrastructure.SqlServer.Repositories
                 .AsNoTracking()
                 .Select(x => new ListTicketsDto
                 {
-                    Code = x.Id,
+                    Id = x.Id,
+                    Number = x.Number,
                     Title = x.Title,
                     Description = x.Description,
                     Status = x.Status.GetDescription(),
@@ -32,7 +33,7 @@ namespace Common.Infrastructure.SqlServer.Repositories
                     {
                         Id = x.RoomId,
                         Name = x.Room.Name,
-                        Desciption = x.Room.Description,
+                        Description = x.Room.Description
                     }
                 }).ToListAsync();
         }
@@ -41,9 +42,7 @@ namespace Common.Infrastructure.SqlServer.Repositories
         {
             return await Entity
                 .Include(x => x.User)
-                .Where(x => x.Status == TicketStatus.Solved &&
-                            x.LastUpdatedAt.AddDays(DaysToWaitBeforeClosing) <= DateTime.UtcNow &&
-                            !x.IsDeleted)
+                .Where(x => x.Status == TicketStatus.Solved && x.LastUpdatedAt.AddDays(DaysToWaitBeforeClosing) <= DateTime.UtcNow && !x.IsDeleted)
                 .ToListAsync();
 
         }
