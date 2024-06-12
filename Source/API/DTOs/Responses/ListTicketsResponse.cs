@@ -13,6 +13,7 @@ namespace API.DTOs.Responses
         public string Responsible { get; init; }
         public ListRoomDto Room { get; init; }
         public DateTime CreatedAt { get; init; }
+        public List<string> ImagesBase64 { get; init; }
 
         public static ListTicketsResponse ToListTicketsResponse(ListTicketsDto listTicketsDto)
         {
@@ -26,7 +27,8 @@ namespace API.DTOs.Responses
                     Status = listTicketsDto.Status,
                     Responsible = listTicketsDto.Responsible,
                     CreatedAt = listTicketsDto.CreatedAt,
-                    Room = listTicketsDto.RoomDto
+                    Room = listTicketsDto.RoomDto,
+                    ImagesBase64 = listTicketsDto.Images?.Select(x => Convert.ToBase64String(x)).ToList(),
                 };
 
             return default;
