@@ -20,10 +20,6 @@ namespace Common.Utils
             var baseImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "template.png");
             var baseImage = LoadImage(baseImagePath);
 
-            Console.WriteLine("---");
-            Console.WriteLine(baseImagePath);
-            Console.WriteLine("---");
-
             using var graphics = Graphics.FromImage(baseImage);
 
             DrawQrCodeOnBaseImage(graphics, qrCodeImage, baseImage.Width);
@@ -37,10 +33,6 @@ namespace Common.Utils
             var qrCodeData = qrGenerator.CreateQrCode(Url, QRCodeGenerator.ECCLevel.H);
             var qrCode = new QRCode(qrCodeData);
             var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "supportLogo.png");
-
-            Console.WriteLine("---");
-            Console.WriteLine(iconPath);
-            Console.WriteLine("---");
 
             var icon = LoadImage(iconPath);
 
