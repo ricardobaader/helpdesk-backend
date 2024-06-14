@@ -8,6 +8,7 @@ namespace Common.Domain.Rooms
     {
         public string Name { get; private set; }
         public string Description { get; private set; }
+        public byte[] QrCode { get; private set; }
 
         private readonly IList<Ticket> _tickets = new List<Ticket>();
         [JsonIgnore] public virtual ICollection<Ticket> Tickets => _tickets;
@@ -37,6 +38,11 @@ namespace Common.Domain.Rooms
             }
         }
 
+        public void SetQrCode(byte[] qrCode)
+        {
+            QrCode = qrCode;
+        }
+
         private void ValidateInformation(string name, string description)
         {
             Errors = EntityValidator.New()
@@ -44,6 +50,5 @@ namespace Common.Domain.Rooms
                 .Requiring(description, "É necessário informar uma descrição")
                 .GetErrors();
         }
-
     }
 }

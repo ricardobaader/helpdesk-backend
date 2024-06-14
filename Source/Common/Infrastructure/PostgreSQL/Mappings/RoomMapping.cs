@@ -17,6 +17,7 @@ namespace Common.Infrastructure.SqlServer.Mappings
         {
             Builder.Property(x => x.Name).HasColumnName("name").IsRequired();
             Builder.Property(x => x.Description).HasColumnName("description").IsRequired();
+            Builder.Property(x => x.QrCode).HasColumnName("qr_code").IsRequired(false);
         }
 
         protected override void MapForeignKeys()

@@ -11,6 +11,7 @@ namespace Common.Domain.Tickets
     {
         public string Title { get; private set; }
         public string Description { get; private set; }
+        public int Number { get; private set; }
         public TicketStatus Status { get; private set; }
 
         [JsonIgnore]

@@ -18,7 +18,11 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SEND_EMAIL": "false",
-        "EXECUTE_CLOSING_TICKETS_JOB": "false"
+        "EXECUTE_CLOSING_TICKETS_JOB": "false",
+        "EMAIL_PASSWORD": "",
+        "FRONTEND_BASE_URL": "https://localhost:3000",
+        "BACKEND_BASE_URL": "https://localhost:7233",
+        "POSTGRESQL_CONNECTION_STRING": ""
       }
     },
     "IIS Express": {
