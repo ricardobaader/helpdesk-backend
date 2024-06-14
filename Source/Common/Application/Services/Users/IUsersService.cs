@@ -1,11 +1,13 @@
 ﻿using Common.Domain.Users;
+using Identity.DTOs.Requests;
+using Identity.DTOs.Responses;
 
 namespace Common.Application.Services.Users
 {
     public interface IUsersService
     {
-        Task Create(CreateUserDto request);
+        Task Create(CreateUserRequest request);
         Task<IEnumerable<ListUsersDto>> ListUsers();
-        Task<SuccessLoginDto> Login(LoginDto request);
+        Task<UserLoginResponse> Login(UserLoginRequest request);
     }
 }

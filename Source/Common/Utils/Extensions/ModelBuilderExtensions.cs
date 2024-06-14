@@ -22,7 +22,7 @@ namespace Common.Utils.Extensions
             );
 
             modelBuilder.Entity<User>().HasData(
-                new User("admin", "admin@gmail.com.br", "admin123", UserType.Admin));
+                new User("admin", "admin@gmail.com.br", UserType.Admin));
         }
     }
 }

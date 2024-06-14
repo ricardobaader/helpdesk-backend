@@ -10,7 +10,6 @@ namespace Common.Domain.Users
     {
         public string Name { get; private set; }
         public string Email { get; private set; }
-        public string Password { get; private set; }
         public UserType UserType { get; private set; }
 
         private readonly IList<Ticket> _tickets = new List<Ticket>();
@@ -22,21 +21,20 @@ namespace Common.Domain.Users
         private readonly IList<Chat> _chats = new List<Chat>();
         [JsonIgnore] public virtual ICollection<Chat> Chats => _chats;
 
-        public User(string name, string email, string password, UserType userType)
+        public User(string name, string email, UserType userType)
         {
-            ValidateInfo(name, email, password, userType);
+            ValidateInfo(name, email, userType);
 
             if (IsValid)
             {
                 SetBaseProperties();
                 Name = name;
                 Email = email;
-                Password = password;
                 UserType = userType;
             }
         }
 
-        private void ValidateInfo(string name, string email, string password, UserType userType)
+        private void ValidateInfo(string name, string email, UserType userType)
         {
             Regex validateEmailRegex =
                 new("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
@@ -44,7 +42,6 @@ namespace Common.Domain.Users
             Errors = EntityValidator.New()
            .Requiring(name, "O nome deve ser informado")
            .Requiring(email, "O email deve ser informado")
-           .Requiring(password, "A senha deve ser informada")
            .When(!Enum.IsDefined(userType), "O tipo de usuário informado é inválido")
            .When(!validateEmailRegex.IsMatch(email), "O email informado é inválido")
            .GetErrors();

@@ -10,8 +10,9 @@ namespace Identity.DTOs.Responses
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public DateTime? ExpirationDate { get; private set; }
 
-        public string Name { get; private set; }
-        public string Cnpj { get; private set; }
+        public string Name { get; set; }
+        public int UserType { get; set; }
+        public Guid UserId { get; set; }
 
         public UserLoginResponse(bool success, string token, DateTime expirationDate) : base(success)
         {
@@ -21,10 +22,11 @@ namespace Identity.DTOs.Responses
 
         public UserLoginResponse(bool success) : base(success) { }
 
-        public void AddCompanyFields(string companyName, string cnpj)
+        public void AddCustomFields(string name, int userType, Guid userId)
         {
-            Name = companyName;
-            Cnpj = cnpj;
+            Name = name;
+            UserType = userType;
+            UserId = userId;
         }
     }
 }
