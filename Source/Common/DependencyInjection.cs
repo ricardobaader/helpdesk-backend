@@ -28,6 +28,7 @@ namespace Common
         public static void AddCommon(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddPostgresConfig(configuration);
+            services.AddAuthentication(configuration);
             services.AddServices();
         }
 
