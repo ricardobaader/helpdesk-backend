@@ -33,6 +33,11 @@ app.UseCors(builder => builder
 app.UseAuthorization();
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    await DependencyInjection.InitializeDatabase(scope.ServiceProvider, builder.Configuration);
+}
+
 app.MapHub<ChatHub>("/Chat");
 
 app.Run();

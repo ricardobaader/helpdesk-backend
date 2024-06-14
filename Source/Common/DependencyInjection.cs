@@ -10,9 +10,16 @@ using Common.Domain.Users;
 using Common.Infrastructure.SqlServer;
 using Common.Infrastructure.SqlServer.Common;
 using Common.Infrastructure.SqlServer.Repositories;
+using Identity.Configurations;
+using Identity.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Common
 {
@@ -38,6 +45,133 @@ namespace Common
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ITicketsRepository, TicketsRepository>();
             services.AddScoped<IChatsRepository, ChatRepository>();
+
+        }
+
+        internal static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
+                .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
+                .AddEntityFrameworkStores<IdentityDataContext>()
+                .AddDefaultTokenProviders();
+
+            var jwtAppSettingOptions = configuration.GetSection(nameof(JwtOptions));
+#pragma warning disable CS8604 // Possible null reference argument.
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("jwtOptions:SecurityKey").Value));
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            services.Configure<JwtOptions>(options =>
+            {
+#pragma warning disable CS8601 // Possible null reference assignment.
+                options.Issuer = jwtAppSettingOptions[nameof(JwtOptions.Issuer)];
+                options.Audience = jwtAppSettingOptions[nameof(JwtOptions.Audience)];
+                options.SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
+                options.Expiration = int.Parse(jwtAppSettingOptions[nameof(JwtOptions.Expiration)] ?? "0");
+#pragma warning restore CS8601 // Possible null reference assignment.
+            });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.User.RequireUniqueEmail = true;
+            });
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = configuration.GetSection("jwtOptions:Issuer").Value,
+
+                ValidateAudience = true,
+                ValidAudience = configuration.GetSection("jwtOptions:Audience").Value,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = securityKey,
+
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
+
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = tokenValidationParameters;
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdministratorRole",
+                     policy => policy.RequireRole("Administrator"));
+            });
+        }
+
+        public static async Task InitializeDatabase(IServiceProvider serviceProvider, IConfiguration configuration)
+        {
+            var context = serviceProvider.GetRequiredService<DatabaseContext>();
+
+            await context.Database.EnsureCreatedAsync();
+
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            var roleName = "Administrator";
+
+            IdentityResult result;
+
+            var roleExists = await roleManager.RoleExistsAsync(roleName);
+
+            if (!roleExists)
+            {
+                result = await roleManager.CreateAsync(new IdentityRole(roleName));
+
+                if (result.Succeeded)
+                {
+                    var userManager = serviceProvider
+                        .GetRequiredService<UserManager<IdentityUser>>();
+
+                    var emailAdmin = "administrador@gmail.com.br";
+                    var admin = await userManager
+                        .FindByEmailAsync(emailAdmin);
+
+                    if (admin is null)
+                    {
+                        admin = new IdentityUser
+                        {
+                            UserName = emailAdmin,
+                            Email = emailAdmin,
+                            EmailConfirmed = true
+                        };
+
+                        result = await userManager
+                            .CreateAsync(admin, configuration["AdminCredentials:Password"]);
+
+                        if (result.Succeeded)
+                        {
+                            var userRepository = serviceProvider.GetRequiredService<IBaseEntityRepository<User>>();
+                            var userName = "administrador";
+                            var userType = UserType.Admin;
+
+                            await userRepository.InsertOne(new(userName, emailAdmin, userType));
+
+                            result = await userManager
+                                .AddToRoleAsync(admin, roleName);
+
+                            await userManager.SetLockoutEnabledAsync(admin, false);
+
+                            if (!result.Succeeded)
+                                throw new Exception("System failed to link role to user");
+                        }
+                    }
+                }
+            }
 
         }
 
