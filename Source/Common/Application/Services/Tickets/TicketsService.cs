@@ -12,7 +12,10 @@ namespace Common.Application.Services.Tickets
 {
     internal class TicketsService : ITicketsService
     {
-        private readonly  string frontendBaseUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
+        private const int MaxImageSizeInBytes = 5 * 1024 * 1024; // 5 MB
+
+        private readonly string FrontendBaseUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
+        private readonly List<string> AcceptedImageContentTypes = new() { "image/jpg", "image/png", "image/jpeg", "image/webp" };
 
         private readonly ITicketsRepository _ticketsRepository;
         private readonly IBaseEntityRepository<User> _usersRepository;
@@ -51,6 +54,12 @@ namespace Common.Application.Services.Tickets
 
             foreach (var image in request.Images)
             {
+                if (!AcceptedImageContentTypes.Contains(image.ContentType))
+                    throw new InvalidDataException($"Tipo de extensão de imagem não suportado: {image.ContentType}. Tipos aceitos: {string.Join(", ", AcceptedImageContentTypes)}");
+
+                if (image.Length > MaxImageSizeInBytes)
+                    throw new InvalidDataException("A imagem excede o tamanho máximo permitido de 5 MB.");
+
                 var imageBytes = await image.ConvertToByteArray();
 
                 ticketImages.Add(new TicketImage(ticket.Id, imageBytes));
@@ -65,7 +74,7 @@ namespace Common.Application.Services.Tickets
                 <p>Seu chamado <b>{ticket.Title}</b> foi criado com sucesso e recebido por nosso sistema e está na fila para ser atendido.</p>
                 <p>Caso necessário, entraremos em contato para obter mais informações a respeito do problema.</p>
                 <p>Para acompanhar o status do chamado, aperte o botão abaixo:</p>
-                <p><a href='{frontendBaseUrl}' class='btn'>Clique Aqui</a></p>
+                <p><a href='{FrontendBaseUrl}' class='btn'>Clique Aqui</a></p>
                 <p>Obrigado por contribuir pela melhoria de nossa Universidade.</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);
@@ -110,7 +119,8 @@ namespace Common.Application.Services.Tickets
                 Description = x.Description,
                 Status = x.Status.GetDescription(),
                 CreatedAt = x.CreatedAt,
-                Responsible = x.SupportUser.Name,
+                Responsible = x.User.Name,
+                Attendant = x.SupportUser.Name,
                 RoomDto = new ListRoomDto
                 {
                     Id = x.RoomId,
@@ -164,20 +174,32 @@ namespace Common.Application.Services.Tickets
                 throw new InvalidDataException("Somente um funcionário da equipe de suporte pode alterar um chamado");
 
             if (ticket.Status != TicketStatus.Solved)
-                throw new InvalidDataException("Somente chamados em resolvidos podem ser encerrados");
+                throw new InvalidDataException("Somente chamados resolvidos podem ser encerrados");
+
+            var deletedTicketImages = new List<TicketImage>();
+
+            foreach (var ticketImage in ticket.TicketImages)
+            {
+                ticketImage.SetDelete();
+                deletedTicketImages.Add(ticketImage);
+            }
 
             ticket.CloseTicket();
 
             _ticketsRepository.UpdateOne(ticket);
+            _ticketImagesRepository.UpdateMany(deletedTicketImages);
 
             await SendTicketStatusUpdateEmailAsync(ticket, user);
         }
 
-        public async Task Delete(Guid id)
+        public async Task Delete(Guid id, Guid userId)
         {
             var ticket = await _ticketsRepository.SelectOneBy(x => x.Id == id && !x.IsDeleted);
             if (ticket is null)
                 throw new EntityNotFoundException("O chamado informado não existe");
+
+            if (ticket.UserId != userId)
+                throw new InvalidDataException("Apenas o usuário que criou o chamado pode excluí-lo.");
 
             if (ticket.Status != TicketStatus.Pending)
                 throw new InvalidDataException("Um chamado em andamento ou concluído não pode ser excluído");
@@ -211,7 +233,7 @@ namespace Common.Application.Services.Tickets
                 <p>O status do seu chamado foi atualizado.</p>
                 <p><b>Novo Status: </b>{ticket.Status.GetDescription()}</p>
                 <p>Para acompanhar o seu chamado, aperte o botão abaixo:</p>
-                <p><a href='{frontendBaseUrl}' class='btn'>Clique Aqui</a></p>
+                <p><a href='{FrontendBaseUrl}' class='btn'>Clique Aqui</a></p>
                 <p>Estamos à disposição para qualquer dúvida!</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);

@@ -11,8 +11,9 @@ namespace API.DTOs.Responses
         public string Description { get; init; }
         public string Status { get; init; }
         public string Responsible { get; init; }
+        public string Attendant { get; init; }
         public ListRoomDto Room { get; init; }
-        public DateTime CreatedAt { get; init; }
+        public string CreatedAt { get; init; }
         public List<string> ImagesBase64 { get; init; }
 
         public static ListTicketsResponse ToListTicketsResponse(ListTicketsDto listTicketsDto)
@@ -26,7 +27,8 @@ namespace API.DTOs.Responses
                     Description = listTicketsDto.Description,
                     Status = listTicketsDto.Status,
                     Responsible = listTicketsDto.Responsible,
-                    CreatedAt = listTicketsDto.CreatedAt,
+                    Attendant = listTicketsDto.Attendant,
+                    CreatedAt = listTicketsDto.CreatedAt.ToString("dd/MM/yyyy"),
                     Room = listTicketsDto.RoomDto,
                     ImagesBase64 = listTicketsDto.Images?.Select(x => Convert.ToBase64String(x)).ToList(),
                 };

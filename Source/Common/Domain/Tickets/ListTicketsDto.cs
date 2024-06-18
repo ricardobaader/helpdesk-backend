@@ -10,6 +10,7 @@ namespace Common.Domain.Tickets
         public string Description { get; init; }
         public string Status { get; init; }
         public string Responsible { get; init; }
+        public string Attendant { get; init; }
         public ListRoomDto RoomDto { get; init; }
         public List<byte[]> Images { get; init; }
         public DateTime CreatedAt { get; init; }

@@ -68,11 +68,12 @@ namespace Common.Domain.Tickets
             Status = TicketStatus.Closed;
         }
 
-        private void ValidateInfo(string title, string description, Guid roomId, Guid userId) => Errors = EntityValidator.New()
-            .Requiring(title, "É necessário informar um título")
-            .Requiring(description, "É necessário informar uma descrição")
-            .Requiring(roomId, "É necessário informar um ID da sala")
-            .Requiring(userId, "É necessário informar um ID do usuário")
-            .GetErrors();
+        private void ValidateInfo(string title, string description, Guid roomId, Guid userId) => 
+            Errors = EntityValidator.New()
+                .Requiring(title, "É necessário informar um título")
+                .Requiring(description, "É necessário informar uma descrição")
+                .Requiring(roomId, "É necessário informar um ID da sala")
+                .Requiring(userId, "É necessário informar um ID do usuário")
+                .GetErrors();
     }
 }

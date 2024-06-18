@@ -64,10 +64,10 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTicket([FromRoute] Guid id)
+        [HttpDelete("{id}/user/{userId}")]
+        public async Task<IActionResult> DeleteTicket([FromRoute] Guid id, Guid userId)
         {
-            await _ticketsService.Delete(id);
+            await _ticketsService.Delete(id, userId);
             return Ok();
         }
     }
