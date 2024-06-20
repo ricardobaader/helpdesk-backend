@@ -18,7 +18,7 @@ namespace Common.Infrastructure.SqlServer.Repositories
                 Id = x.Id,
                 Name = x.Name,
                 Email = x.Email,
-                Role = x.UserType.GetDescription()
+                UserType = x.UserType.GetDescription()
             }).ToListAsync(); ;
         }
     }

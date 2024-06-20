@@ -14,7 +14,7 @@ namespace API.DTOs.Responses
             Id = usersDto.Id,
             Name = usersDto.Name,
             Email = usersDto.Email,
-            Role = usersDto.Role,
+            Role = usersDto.UserType,
         };
     }
 }
