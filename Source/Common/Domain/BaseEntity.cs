@@ -15,9 +15,9 @@ namespace Common.Domain
 
         public bool IsValid => Errors.Count == 0;
 
-        protected void SetBaseProperties()
+        protected void SetBaseProperties(Guid id = new Guid())
         {
-            Id = Guid.NewGuid();
+            Id = id;
             CreatedAt = DateTime.UtcNow;
             LastUpdatedAt = CreatedAt;
             IsDeleted = false;
@@ -31,5 +31,7 @@ namespace Common.Domain
             LastUpdatedAt = DateTime.UtcNow;
             IsDeleted = true;
         }
+
+        public void UpdateId(Guid id) => Id = id;
     }
 }
