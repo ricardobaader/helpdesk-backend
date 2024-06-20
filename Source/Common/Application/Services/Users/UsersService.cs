@@ -19,10 +19,10 @@ namespace Common.Application.Services.Users
             _identityService = identityService;
         }
 
-        public async Task Create(CreateUserRequest request)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequest request)
         {
             if (await _usersRepository.ExistsBy(x => x.Email == request.Email && !x.IsDeleted))
-                throw new ExistingEntityException("O usuário informado ja está cadastrado no sistema");
+                throw new ExistingEntityException("O usuário informado ja existe.");
 
             var user = UserMapper.MapCreateUserRequestToUser(request);
 
@@ -32,6 +32,25 @@ namespace Common.Application.Services.Users
             var userCreated = await _identityService.CreateUser(request);
 
             await _usersRepository.InsertOne(user);
+
+            return userCreated;
+        }
+
+        public async Task<CreateUserResponse> CreateSupportUser(CreateSupportUserRequest request)
+        {
+            if (await _usersRepository.ExistsBy(x => x.Email == request.Email && !x.IsDeleted))
+                throw new ExistingEntityException("O usuário informado ja existe.");
+
+            var user = UserMapper.MapCreateSupportUserRequestToUser(request);
+
+            if (!user.IsValid)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", user.Errors)}");
+
+            var userCreated = await _identityService.CreateUser(request);
+
+            await _usersRepository.InsertOne(user);
+
+            return userCreated;
         }
 
         public async Task<IEnumerable<ListUsersDto>> ListUsers()

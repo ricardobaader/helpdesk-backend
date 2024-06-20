@@ -34,6 +34,19 @@ namespace Common.Domain.Users
             }
         }
 
+        public User(string name, string email)
+        {
+            ValidateInfo(name, email);
+
+            if (IsValid)
+            {
+                SetBaseProperties();
+                Name = name;
+                Email = email;
+                UserType = 0;
+            }
+        }
+
         private void ValidateInfo(string name, string email, UserType userType)
         {
             Regex validateEmailRegex =
@@ -43,6 +56,18 @@ namespace Common.Domain.Users
            .Requiring(name, "O nome deve ser informado")
            .Requiring(email, "O email deve ser informado")
            .When(!Enum.IsDefined(userType), "O tipo de usuário informado é inválido")
+           .When(!validateEmailRegex.IsMatch(email), "O email informado é inválido")
+           .GetErrors();
+        }
+
+        private void ValidateInfo(string name, string email)
+        {
+            Regex validateEmailRegex =
+                new("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$");
+
+            Errors = EntityValidator.New()
+           .Requiring(name, "O nome deve ser informado")
+           .Requiring(email, "O email deve ser informado")
            .When(!validateEmailRegex.IsMatch(email), "O email informado é inválido")
            .GetErrors();
         }

@@ -18,7 +18,14 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
-            await _usersService.Create(request);
+            await _usersService.CreateUser(request);
+            return NoContent();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateSupportUser([FromBody] CreateSupportUserRequest request)
+        {
+            await _usersService.CreateSupportUser(request);
             return NoContent();
         }
 

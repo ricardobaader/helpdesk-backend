@@ -112,6 +112,9 @@ namespace Common
             {
                 options.AddPolicy("RequireAdministratorRole",
                      policy => policy.RequireRole("Administrator"));
+
+                options.AddPolicy("RequireSupportRole",
+                    policy => policy.RequireRole("Support"));
             });
         }
 
@@ -172,6 +175,17 @@ namespace Common
                         }
                     }
                 }
+            }
+
+            roleName = "Support";
+            roleExists = await roleManager.RoleExistsAsync(roleName);
+
+            if (!roleExists)
+            {
+                result = await roleManager.CreateAsync(new IdentityRole(roleName));
+
+                if (!result.Succeeded)
+                    throw new Exception("An error ocurred while creating the role");
             }
 
         }

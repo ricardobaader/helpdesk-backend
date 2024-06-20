@@ -24,7 +24,7 @@ namespace Identity.Services
             _jwtOptions = jwtOptions.Value;
         }
 
-        public async Task<CreateUserResponse> CreateUser(CreateUserRequest userCreate)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequest userCreate, bool isSupportUser = false)
         {
             var identityUser = new IdentityUser
             {
@@ -36,9 +36,12 @@ namespace Identity.Services
             if (result.Succeeded)
                 await _userManager.SetLockoutEnabledAsync(identityUser, false);
 
+            if (isSupportUser)
+                await _userManager.AddToRoleAsync(identityUser, "Support");
+
             var createUserResponse = new CreateUserResponse(result.Succeeded);
 
-            if (!result.Succeeded && result.Errors.Count() > 0)
+            if (!result.Succeeded && result.Errors.Any())
                 createUserResponse.AddErrors(result.Errors.Select(x => x.Description));
 
             return createUserResponse;

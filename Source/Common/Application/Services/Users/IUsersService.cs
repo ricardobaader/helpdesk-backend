@@ -6,7 +6,8 @@ namespace Common.Application.Services.Users
 {
     public interface IUsersService
     {
-        Task Create(CreateUserRequest request);
+        Task<CreateUserResponse> CreateUser(CreateUserRequest request);
+        Task<CreateUserResponse> CreateSupportUser(CreateSupportUserRequest request);
         Task<IEnumerable<ListUsersDto>> ListUsers();
         Task<UserLoginResponse> Login(UserLoginRequest request);
     }
