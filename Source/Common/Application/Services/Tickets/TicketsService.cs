@@ -119,15 +119,12 @@ namespace Common.Application.Services.Tickets
                 Description = x.Description,
                 Status = x.Status.GetDescription(),
                 CreatedAt = x.CreatedAt,
-                Responsible = x.User.Name,
-                Attendant = x.SupportUser.Name,
                 RoomDto = new ListRoomDto
                 {
                     Id = x.RoomId,
                     Name = x.Room.Name,
                     Description = x.Room.Description,
                 },
-                Images = x.TicketImages.Select(x => x.Image).ToList(),
             }, x => x.Id == ticketId);
         }
 

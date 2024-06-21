@@ -37,7 +37,7 @@ namespace API.Controllers
             if (ticket is null)
                 return NotFound(string.Empty);
 
-            return Ok(ListTicketsResponse.ToListTicketsResponse(ticket));
+            return Ok(ListTicketDetailsResponse.ToListTicketDetailsResponse(ticket));
         }
 
         [HttpPut("{id}/user/{supportUserId}:start")]
