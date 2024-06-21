@@ -62,6 +62,7 @@ app.UseCors(builder => builder
     .AllowAnyMethod()
     .AllowCredentials());
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

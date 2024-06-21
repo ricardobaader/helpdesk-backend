@@ -19,8 +19,6 @@ namespace Common.Infrastructure.SqlServer
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.HasDefaultSchema("dbo");
-
             _ = new TicketMapping(modelBuilder.Entity<Ticket>());
             _ = new TicketImageMapping(modelBuilder.Entity<TicketImage>());
             _ = new UserMapping(modelBuilder.Entity<User>());

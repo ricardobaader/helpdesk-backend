@@ -12,6 +12,7 @@ using Common.Infrastructure.SqlServer.Common;
 using Common.Infrastructure.SqlServer.Repositories;
 using Identity.Configurations;
 using Identity.Data;
+using Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,7 @@ namespace Common
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<IIdentityService, IdentityService>();
             services.AddScoped<ITicketsService, TicketsService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IRoomsService, RoomsService>();
@@ -114,7 +116,7 @@ namespace Common
                      policy => policy.RequireRole("Administrator"));
 
                 options.AddPolicy("RequireSupportRole",
-                    policy => policy.RequireRole("Support"));
+                    policy => policy.RequireAssertion(context => context.User.IsInRole("Support") || context.User.IsInRole("Administrator")));
             });
         }
 
@@ -155,7 +157,7 @@ namespace Common
                         };
 
                         result = await userManager
-                            .CreateAsync(admin, configuration["AdminCredentials:Password"]);
+                            .CreateAsync(admin, "Admin@2023");
 
                         if (result.Succeeded)
                         {
@@ -198,13 +200,23 @@ namespace Common
                 {
                     action.MigrationsAssembly("Common");
                     action.EnableRetryOnFailure();
-                    action.MigrationsHistoryTable("__EFMigrationsHistory", "dbo");
                 }));
 
             services
                 .BuildServiceProvider()
                 .GetRequiredService<DatabaseContext>()
                 .Database.Migrate();
+
+            services.AddDbContext<IdentityDataContext>(options =>
+              options.UseNpgsql(connectionString, action =>
+              {
+                  action.EnableRetryOnFailure();
+              }));
+
+            services
+               .BuildServiceProvider()
+               .GetRequiredService<IdentityDataContext>()
+               .Database.Migrate();
 
             services.AddScoped(typeof(IBaseEntityRepository<>), typeof(BaseEntityRepository<>));
         }

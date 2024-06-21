@@ -15,13 +15,13 @@ namespace Common.Domain.Rooms
 
         protected Room() { }
 
-        public Room(string name, string description, Guid id = new Guid())
+        public Room(string name, string description)
         {
             ValidateInformation(name, description);
 
             if (IsValid)
             {
-                SetBaseProperties(id);
+                SetBaseProperties();
                 Name = name;
                 Description = description;
             }

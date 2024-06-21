@@ -2,6 +2,7 @@
 using Common.Application.Services.Users;
 using Identity.DTOs.Requests;
 using Identity.DTOs.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,6 +16,7 @@ namespace API.Controllers
             _usersService = usersService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
@@ -22,6 +24,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpPost]
         public async Task<IActionResult> CreateSupportUser([FromBody] CreateSupportUserRequest request)
         {
@@ -29,6 +32,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ListUsersResponse>>> ListUsers()
         {
