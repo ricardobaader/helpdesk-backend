@@ -16,7 +16,6 @@ namespace API.Controllers
             _usersService = usersService;
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
@@ -25,10 +24,10 @@ namespace API.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
-        [HttpPost]
-        public async Task<IActionResult> CreateSupportUser([FromBody] CreateSupportUserRequest request)
+        [HttpPost("admCreate")]
+        public async Task<IActionResult> CreateUserAsAdministrator([FromBody] CreateUserAsAdministratorRequest request)
         {
-            await _usersService.CreateSupportUser(request);
+            await _usersService.CreateUserAsAdministrator(request);
             return NoContent();
         }
 

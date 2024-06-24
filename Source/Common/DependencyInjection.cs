@@ -165,7 +165,8 @@ namespace Common
                             var userName = "administrador";
                             var userType = UserType.Admin;
 
-                            await userRepository.InsertOne(new(userName, emailAdmin, userType));
+                            await userRepository.InsertOne(new(userName, emailAdmin, "Admin@2023", "Admin@2023", userType));
+                            await userRepository.Commit();
 
                             result = await userManager
                                 .AddToRoleAsync(admin, roleName);

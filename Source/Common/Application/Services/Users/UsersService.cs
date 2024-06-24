@@ -31,22 +31,28 @@ namespace Common.Application.Services.Users
 
             var userCreated = await _identityService.CreateUser(request);
 
+            if (!userCreated.IsSuccess)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", userCreated.Errors)}");
+
             await _usersRepository.InsertOne(user);
 
             return userCreated;
         }
 
-        public async Task<CreateUserResponse> CreateSupportUser(CreateSupportUserRequest request)
+        public async Task<CreateUserResponse> CreateUserAsAdministrator(CreateUserAsAdministratorRequest request)
         {
             if (await _usersRepository.ExistsBy(x => x.Email == request.Email && !x.IsDeleted))
                 throw new ExistingEntityException("O usuário informado ja existe.");
 
-            var user = UserMapper.MapCreateSupportUserRequestToUser(request);
+            var user = UserMapper.MapCreateUserAsAdministratorRequestToUser(request);
 
             if (!user.IsValid)
                 throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", user.Errors)}");
 
-            var userCreated = await _identityService.CreateUser(request);
+            var userCreated = await _identityService.CreateUser(request, request.UserType);
+
+            if(!userCreated.IsSuccess)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", userCreated.Errors)}");
 
             await _usersRepository.InsertOne(user);
 

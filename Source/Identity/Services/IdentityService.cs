@@ -24,7 +24,7 @@ namespace Identity.Services
             _jwtOptions = jwtOptions.Value;
         }
 
-        public async Task<CreateUserResponse> CreateUser(CreateUserRequest userCreate, bool isSupportUser = false)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequest userCreate, int userType = 0)
         {
             var identityUser = new IdentityUser
             {
@@ -33,16 +33,18 @@ namespace Identity.Services
                 EmailConfirmed = true
             };
             var result = await _userManager.CreateAsync(identityUser, userCreate.Password);
-            if (result.Succeeded)
-                await _userManager.SetLockoutEnabledAsync(identityUser, false);
-
-            if (isSupportUser)
-                await _userManager.AddToRoleAsync(identityUser, "Support");
 
             var createUserResponse = new CreateUserResponse(result.Succeeded);
 
             if (!result.Succeeded && result.Errors.Any())
+            {
                 createUserResponse.AddErrors(result.Errors.Select(x => x.Description));
+                return createUserResponse;
+            }
+
+            await _userManager.SetLockoutEnabledAsync(identityUser, false);
+
+            await AddRoleIfNecessary(identityUser, userType);
 
             return createUserResponse;
         }
@@ -81,6 +83,21 @@ namespace Identity.Services
             }
 
             return true;
+        }
+
+        private async Task AddRoleIfNecessary(IdentityUser user, int userType)
+        {
+            switch (userType)
+            {
+                case 1:
+                    await _userManager.AddToRoleAsync(user, "Support");
+                    break;
+                case 2:
+                    await _userManager.AddToRoleAsync(user, "Administrator");
+                    break;
+                default:
+                    break;
+            }
         }
 
         private async Task<UserLoginResponse> GenerateToken(string email)

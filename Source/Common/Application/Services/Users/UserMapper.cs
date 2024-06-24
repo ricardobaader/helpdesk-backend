@@ -6,9 +6,9 @@ namespace Common.Application.Services.Users
     public static class UserMapper
     {
         public static User MapCreateUserRequestToUser(CreateUserRequest dto) =>
-            new(dto.Name, dto.Email);
+            new(dto.Name, dto.Email, dto.Password, dto.ConfirmPassword);
 
-        public static User MapCreateSupportUserRequestToUser(CreateSupportUserRequest dto) =>
-            new(dto.Name, dto.Email, (UserType)dto.UserType);
+        public static User MapCreateUserAsAdministratorRequestToUser(CreateUserAsAdministratorRequest dto) =>
+            new(dto.Name, dto.Email, dto.Password, dto.ConfirmPassword, (UserType)dto.UserType);
     }
 }
