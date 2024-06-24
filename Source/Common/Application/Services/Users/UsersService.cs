@@ -1,7 +1,13 @@
-﻿using Common.Domain.Tickets;
+using Common.Domain.Tickets;
 using Common.Domain.Users;
 using Common.Exceptions;
+using Common.Domain.Users;
+using Common.Exceptions;
+using Common.Utils;
 using Common.Utils.Extensions;
+using Identity.DTOs.Requests;
+using Identity.DTOs.Responses;
+using Identity.Services;
 
 namespace Common.Application.Services.Users
 {
@@ -9,22 +15,55 @@ namespace Common.Application.Services.Users
     {
         private readonly IUsersRepository _usersRepository;
         private readonly ITicketsRepository _ticketsRepository;
+        private readonly IIdentityService _identityService;
 
         public UsersService(IUsersRepository userRepository,
-            ITicketsRepository ticketsRepository)
+            ITicketsRepository ticketsRepository,
+            IIdentityService identityService)
         {
             _usersRepository = userRepository;
             _ticketsRepository = ticketsRepository;
+            _identityService = identityService;
         }
 
-        public async Task Create(CreateUserDto request)
+        public async Task<CreateUserResponse> CreateUser(CreateUserRequest request)
         {
-            var user = UserMapper.MapCreateUserDtoToUser(request);
+            if (await _usersRepository.ExistsBy(x => x.Email == request.Email && !x.IsDeleted))
+                throw new ExistingEntityException("O usuário informado ja existe.");
+
+            var user = UserMapper.MapCreateUserRequestToUser(request);
 
             if (!user.IsValid)
                 throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", user.Errors)}");
 
+            var userCreated = await _identityService.CreateUser(request);
+
+            if (!userCreated.IsSuccess)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", userCreated.Errors)}");
+
             await _usersRepository.InsertOne(user);
+
+            return userCreated;
+        }
+
+        public async Task<CreateUserResponse> CreateUserAsAdministrator(CreateUserAsAdministratorRequest request)
+        {
+            if (await _usersRepository.ExistsBy(x => x.Email == request.Email && !x.IsDeleted))
+                throw new ExistingEntityException("O usuário informado ja existe.");
+
+            var user = UserMapper.MapCreateUserAsAdministratorRequestToUser(request);
+
+            if (!user.IsValid)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", user.Errors)}");
+
+            var userCreated = await _identityService.CreateUser(request, request.UserType);
+
+            if(!userCreated.IsSuccess)
+                throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", userCreated.Errors)}");
+
+            await _usersRepository.InsertOne(user);
+
+            return userCreated;
         }
 
         public async Task Delete(Guid id)
@@ -57,21 +96,35 @@ namespace Common.Application.Services.Users
             }, x => x.Id == userId && !x.IsDeleted);
         }
 
-        public async Task<SuccessLoginDto> Login(LoginDto request)
+        public async Task<UserLoginResponse> Login(UserLoginRequest request)
         {
-            var user = await _usersRepository
-                .SelectOneBy(x => x.Email == request.Email && x.Password == request.Password && !x.IsDeleted);
-
-            if (user is null)
-                return new() { IsSuccess = false };
-
-            return new SuccessLoginDto()
+            var errors = ValidateRequestLogin(request);
+            if (errors.Any())
             {
-                Name = user.Name,
-                UserId = user.Id,
-                UserType = user.UserType.GetDescription(),
-                IsSuccess = true
-            };
+                var response = new UserLoginResponse(false);
+                response.AddErrors(errors);
+                return response;
+            }
+
+            var user = await _usersRepository
+                .SelectOneBy(x => x.Email == request.Email && !x.IsDeleted);
+
+            var userLoggedIn = await _identityService.Login(request);
+
+            if (user is not null)
+                userLoggedIn.AddCustomFields(user.Name, (int)user.UserType, user.Id);
+
+            return userLoggedIn;
+        }
+
+        private static List<string> ValidateRequestLogin(UserLoginRequest request)
+        {
+            var errors = EntityValidator.New()
+                .Requiring(request.Email, "O email deve ser informado")
+                .Requiring(request.Password, "A senha deve ser informada")
+                .GetErrors();
+
+            return errors;
         }
     }
 }

@@ -17,7 +17,6 @@ namespace Common.Infrastructure.SqlServer.Mappings
         {
             Builder.Property(x => x.Name).HasColumnName("name").IsRequired();
             Builder.Property(x => x.Email).HasColumnName("email").IsRequired();
-            Builder.Property(x => x.Password).HasColumnName("password").IsRequired();
             Builder.Property(x => x.UserType).HasColumnName("userType").IsRequired();
         }
 

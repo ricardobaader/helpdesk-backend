@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Common.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240517200051_Initial")]
+    [Migration("20240621000218_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,6 @@ namespace Common.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "7.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -67,7 +66,7 @@ namespace Common.Migrations
                     b.HasIndex("Id", "IsDeleted")
                         .IsUnique();
 
-                    b.ToTable("chat_messages", "dbo");
+                    b.ToTable("chat_messages", (string)null);
                 });
 
             modelBuilder.Entity("Common.Domain.Rooms.Room", b =>
@@ -99,102 +98,106 @@ namespace Common.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<byte[]>("QrCode")
+                        .HasColumnType("bytea")
+                        .HasColumnName("qr_code");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Id", "IsDeleted")
                         .IsUnique();
 
-                    b.ToTable("rooms", "dbo");
+                    b.ToTable("rooms", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0c4dc28c-6da2-4f9a-9988-4f2f91184411"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8779),
+                            Id = new Guid("d042c31a-5454-4bef-890c-aa06db7333cc"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7678),
                             Description = "Sala de Aula - Física Avançada",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8779),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7678),
                             Name = "A1"
                         },
                         new
                         {
-                            Id = new Guid("e95114c2-fa39-445f-9b4b-6daf3bdde121"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8790),
+                            Id = new Guid("e42bae84-0ef7-4888-8984-5761fd5a2076"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7682),
                             Description = "Laboratório de Química Orgânica",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8790),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7682),
                             Name = "A2"
                         },
                         new
                         {
-                            Id = new Guid("916ab47c-8152-4da8-9f07-aa86f1deebe1"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8796),
+                            Id = new Guid("e1f047ea-a10e-4622-8927-752ab8f4874d"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7685),
                             Description = "Sala de Conferências - Ciências Sociais",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8796),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7685),
                             Name = "B1"
                         },
                         new
                         {
-                            Id = new Guid("01e790b9-cf98-434f-938b-8cb35fe1cd2f"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8801),
+                            Id = new Guid("5d1164ca-3b93-4b4c-9281-2e8868fbe151"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7687),
                             Description = "Sala de Estudo em Grupo - Matemática",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8801),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7687),
                             Name = "B2"
                         },
                         new
                         {
-                            Id = new Guid("3c98991a-13f6-4915-bb7d-0ea7fc30628d"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8805),
+                            Id = new Guid("9d88d8e3-f41b-4dbe-a4e3-58a67bff9771"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7689),
                             Description = "Auditório - Palestras de História da Arte",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8805),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7689),
                             Name = "C1"
                         },
                         new
                         {
-                            Id = new Guid("6bde5fa1-b7c3-4db0-8c4a-145f50e2853f"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8828),
+                            Id = new Guid("e270a034-caea-492c-a3f5-d01c74e8ca21"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7692),
                             Description = "Sala de Projeção - Filmes de Literatura",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8828),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7692),
                             Name = "C2"
                         },
                         new
                         {
-                            Id = new Guid("e3b4a787-d2c6-41a4-8495-ca73efb58b8f"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8834),
+                            Id = new Guid("ea78e078-1e9f-433c-9977-567ce3c4c240"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7694),
                             Description = "Sala de Seminários - Engenharia Civil",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8834),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7694),
                             Name = "D1"
                         },
                         new
                         {
-                            Id = new Guid("7cf046c2-40b2-4b63-b097-eb88f08fbb88"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8838),
+                            Id = new Guid("dee09be6-a2f8-4ac1-a68c-15f0e5b1ede9"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7696),
                             Description = "Laboratório de Informática - Desenvolvimento de Software",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8838),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7696),
                             Name = "D2"
                         },
                         new
                         {
-                            Id = new Guid("749d0d36-265d-4a58-bb1d-a26a5dc33619"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8843),
+                            Id = new Guid("341d68bf-ebfb-4e3c-8749-e716827f48bd"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7700),
                             Description = "Biblioteca - Estudos de Filosofia",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8843),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7700),
                             Name = "E1"
                         },
                         new
                         {
-                            Id = new Guid("c0271f70-2609-4d2d-b9db-2d5542359048"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8847),
+                            Id = new Guid("5551bdbf-9c2e-495c-97c6-c2a68ebf3b1a"),
+                            CreatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7702),
                             Description = "Sala de Reuniões - Administração de Empresas",
                             IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 142, DateTimeKind.Utc).AddTicks(8847),
+                            LastUpdatedAt = new DateTime(2024, 6, 21, 0, 2, 18, 68, DateTimeKind.Utc).AddTicks(7702),
                             Name = "E2"
                         });
                 });
@@ -234,7 +237,7 @@ namespace Common.Migrations
                     b.HasIndex("Id", "IsDeleted")
                         .IsUnique();
 
-                    b.ToTable("ticket_images", "dbo");
+                    b.ToTable("ticket_images", (string)null);
                 });
 
             modelBuilder.Entity("Common.Domain.Tickets.Ticket", b =>
@@ -260,6 +263,14 @@ namespace Common.Migrations
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("last_updated_at");
+
+                    b.Property<int>("Number")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Number"));
+                    NpgsqlPropertyBuilderExtensions.HasIdentityOptions(b.Property<int>("Number"), 100L, null, null, null, null, null);
 
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uuid")
@@ -293,7 +304,7 @@ namespace Common.Migrations
                     b.HasIndex("Id", "IsDeleted")
                         .IsUnique();
 
-                    b.ToTable("tickets", "dbo");
+                    b.ToTable("tickets", (string)null);
                 });
 
             modelBuilder.Entity("Common.Domain.Users.User", b =>
@@ -325,11 +336,6 @@ namespace Common.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("password");
-
                     b.Property<int>("UserType")
                         .HasColumnType("integer")
                         .HasColumnName("userType");
@@ -339,20 +345,7 @@ namespace Common.Migrations
                     b.HasIndex("Id", "IsDeleted")
                         .IsUnique();
 
-                    b.ToTable("users", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("d05c7c01-8786-46c1-a03b-87808caa1e54"),
-                            CreatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 143, DateTimeKind.Utc).AddTicks(436),
-                            Email = "admin@gmail.com.br",
-                            IsDeleted = false,
-                            LastUpdatedAt = new DateTime(2024, 5, 17, 20, 0, 51, 143, DateTimeKind.Utc).AddTicks(436),
-                            Name = "admin",
-                            Password = "admin123",
-                            UserType = 2
-                        });
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Common.Domain.Chats.Chat", b =>

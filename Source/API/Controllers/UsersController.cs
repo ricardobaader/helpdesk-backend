@@ -1,6 +1,8 @@
-﻿using API.DTOs.Requests;
 using API.DTOs.Responses;
 using Common.Application.Services.Users;
+using Identity.DTOs.Requests;
+using Identity.DTOs.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,10 +19,11 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
-            await _usersService.Create(request.ToCreateUserDto());
+            await _usersService.CreateUser(request);
             return NoContent();
         }
-
+        
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetUserById([FromRoute] Guid id)
         {
@@ -31,7 +34,8 @@ namespace API.Controllers
 
             return Ok(user);
         }
-
+      
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
         {
@@ -39,6 +43,15 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpPost("admCreate")]
+        public async Task<IActionResult> CreateUserAsAdministrator([FromBody] CreateUserAsAdministratorRequest request)
+        {
+            await _usersService.CreateUserAsAdministrator(request);
+            return NoContent();
+        }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ListUsersResponse>>> GetUsers()
         {
@@ -47,13 +60,16 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult<UserLoginResponse>> Login([FromBody] UserLoginRequest request)
         {
-            var responseLogin = await _usersService.Login(request.ToLoginDto());
+            var responseLogin = await _usersService.Login(request);
 
-            if (!responseLogin.IsSuccess) return Unauthorized(responseLogin);
+            if (responseLogin.IsSuccess)
+                return Ok(responseLogin);
+            else if (responseLogin.Errors.Count > 0)
+                return BadRequest(responseLogin);
 
-            return Ok(LoginResponse.ToLoginResponse(responseLogin));
+            return Unauthorized(responseLogin);
         }
     }
 }
