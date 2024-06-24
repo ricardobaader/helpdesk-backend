@@ -1,5 +1,6 @@
 ﻿using API.DTOs.Requests;
 using Common.Application.Services.Rooms;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -13,10 +14,12 @@ namespace API.Controllers
             _roomsService = roomsService;
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult<IList<string>> GetRooms() =>
             Ok(_roomsService.GetRooms());
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpPost]
         public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequest request)
         {
@@ -24,6 +27,7 @@ namespace API.Controllers
             return Created(string.Empty, roomId);
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateRoom([FromRoute] Guid id, [FromBody] UpdateRoomRequest request)
         {
@@ -31,6 +35,7 @@ namespace API.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom([FromRoute] Guid id)
         {
@@ -38,6 +43,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetRoomById([FromRoute] Guid id)
         {
@@ -49,6 +55,7 @@ namespace API.Controllers
             return Ok(room);
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpGet("{id}/qrcode")]
         public async Task<ActionResult> GetRoomQRCode([FromRoute] Guid id)
         {

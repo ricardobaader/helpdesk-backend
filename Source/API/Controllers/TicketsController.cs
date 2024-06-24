@@ -1,6 +1,7 @@
 ﻿using API.DTOs.Requests;
 using API.DTOs.Responses;
 using Common.Application.Services.Tickets;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -15,6 +16,7 @@ namespace API.Controllers
             _ticketsService = ticketsService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateTicket([FromForm] CreateTicketRequest request)
         {
@@ -22,6 +24,7 @@ namespace API.Controllers
             return Created(string.Empty, ticketId);
         }
 
+        [Authorize]
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<ListTicketsResponse>> ListTickets([FromRoute] Guid userId)
         {
@@ -29,6 +32,7 @@ namespace API.Controllers
             return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult> ListTicketDetails([FromRoute] Guid id)
         {
@@ -40,6 +44,7 @@ namespace API.Controllers
             return Ok(ListTicketsResponse.ToListTicketsResponse(ticket));
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpPut("{id}/user/{supportUserId}:start")]
         [SwaggerOperation("StartTicket")]
         public async Task<IActionResult> StartTicket([FromRoute] Guid id, Guid supportUserId)
@@ -48,6 +53,7 @@ namespace API.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
         [HttpPut("{id}/user/{supportUserId}:finish")]
         [SwaggerOperation("FinishTicket")]
         public async Task<IActionResult> FinishTicket([FromRoute] Guid id, [FromRoute] Guid supportUserId)
@@ -56,6 +62,7 @@ namespace API.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPut("{id}/user/{userId}:close")]
         [SwaggerOperation("CloseTicket")]
         public async Task<IActionResult> CloseTicket([FromRoute] Guid id, [FromRoute] Guid userId)
@@ -64,6 +71,7 @@ namespace API.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTicket([FromRoute] Guid id)
         {

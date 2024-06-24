@@ -8,7 +8,8 @@ namespace Common.Utils.Extensions
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Room>().HasData(
+            var roomsSeed = new List<Room>
+            {
                 new Room("A1", "Sala de Aula - Física Avançada"),
                 new Room("A2", "Laboratório de Química Orgânica"),
                 new Room("B1", "Sala de Conferências - Ciências Sociais"),
@@ -19,10 +20,9 @@ namespace Common.Utils.Extensions
                 new Room("D2", "Laboratório de Informática - Desenvolvimento de Software"),
                 new Room("E1", "Biblioteca - Estudos de Filosofia"),
                 new Room("E2", "Sala de Reuniões - Administração de Empresas")
-            );
+            };
 
-            modelBuilder.Entity<User>().HasData(
-                new User("admin", "admin@gmail.com.br", "admin123", UserType.Admin));
+            modelBuilder.Entity<Room>().HasData(roomsSeed);
         }
     }
 }

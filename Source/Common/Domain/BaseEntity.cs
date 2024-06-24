@@ -31,5 +31,7 @@ namespace Common.Domain
             LastUpdatedAt = DateTime.UtcNow;
             IsDeleted = true;
         }
+
+        public void UpdateId(Guid id) => Id = id;
     }
 }
