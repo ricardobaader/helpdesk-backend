@@ -70,7 +70,7 @@ namespace Common
                 options.Issuer = jwtAppSettingOptions[nameof(JwtOptions.Issuer)];
                 options.Audience = jwtAppSettingOptions[nameof(JwtOptions.Audience)];
                 options.SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
-                options.Expiration = int.Parse(jwtAppSettingOptions[nameof(JwtOptions.Expiration)] ?? "0");
+                options.Expiration = int.Parse(jwtAppSettingOptions[nameof(JwtOptions.Expiration)] ?? "3600");
 #pragma warning restore CS8601 // Possible null reference assignment.
             });
 
