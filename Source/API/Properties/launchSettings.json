@@ -23,6 +23,12 @@
         "FRONTEND_BASE_URL": "https://localhost:3000",
         "BACKEND_BASE_URL": "https://localhost:7233",
         "POSTGRESQL_CONNECTION_STRING": "Host=localhost;Port=5432;Database=helpdesk;Username=postgres;Password=admin;SSL Mode=Disable;Minimum Pool Size=10;Maximum Pool Size=20;Command Timeout=60;Pooling=False;Trust Server Certificate=True"
+      },
+      "jwtOptions": {
+        "Issuer": "http://localhost",
+        "Audience": "Audience",
+        "SecurityKey": "a83e48bd-bf86-4a32-a87c-5d83b1c9cdf4",
+        "Expiration": 3600
       }
     },
     "IIS Express": {

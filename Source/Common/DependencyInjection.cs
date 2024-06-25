@@ -51,6 +51,8 @@ namespace Common
 
         internal static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var securityKeyEnv = Environment.GetEnvironmentVariable("SecurityKey");
+
             services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>()
                 .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
@@ -59,7 +61,7 @@ namespace Common
 
             var jwtAppSettingOptions = configuration.GetSection(nameof(JwtOptions));
 #pragma warning disable CS8604 // Possible null reference argument.
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("jwtOptions:SecurityKey").Value));
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKeyEnv));
 #pragma warning restore CS8604 // Possible null reference argument.
 
             services.Configure<JwtOptions>(options =>
@@ -82,13 +84,16 @@ namespace Common
                 options.User.RequireUniqueEmail = true;
             });
 
+            var issuerEnv = Environment.GetEnvironmentVariable("Issuer");
+            var audienceEnv = Environment.GetEnvironmentVariable("Audience");
+
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = configuration.GetSection("jwtOptions:Issuer").Value,
+                ValidIssuer = issuerEnv,
 
                 ValidateAudience = true,
-                ValidAudience = configuration.GetSection("jwtOptions:Audience").Value,
+                ValidAudience = audienceEnv,
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey,
