@@ -51,27 +51,20 @@ namespace Common
 
         internal static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var securityKeyEnv = Environment.GetEnvironmentVariable("SecurityKey");
-
             services.AddDefaultIdentity<IdentityUser>()
                 .AddRoles<IdentityRole>()
                 .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
                 .AddEntityFrameworkStores<IdentityDataContext>()
                 .AddDefaultTokenProviders();
 
-            var jwtAppSettingOptions = configuration.GetSection(nameof(JwtOptions));
-#pragma warning disable CS8604 // Possible null reference argument.
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKeyEnv));
-#pragma warning restore CS8604 // Possible null reference argument.
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.JwtSecurityKey()));
 
             services.Configure<JwtOptions>(options =>
             {
-#pragma warning disable CS8601 // Possible null reference assignment.
-                options.Issuer = jwtAppSettingOptions[nameof(JwtOptions.Issuer)];
-                options.Audience = jwtAppSettingOptions[nameof(JwtOptions.Audience)];
+                options.Issuer = configuration.JwtIssuer();
+                options.Audience = configuration.JwtAudience();
                 options.SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
-                options.Expiration = int.Parse(jwtAppSettingOptions[nameof(JwtOptions.Expiration)] ?? "3600");
-#pragma warning restore CS8601 // Possible null reference assignment.
+                options.Expiration = int.Parse(configuration.JwtTokenExpiration() ?? "0");
             });
 
             services.Configure<IdentityOptions>(options =>
@@ -84,16 +77,13 @@ namespace Common
                 options.User.RequireUniqueEmail = true;
             });
 
-            var issuerEnv = Environment.GetEnvironmentVariable("Issuer");
-            var audienceEnv = Environment.GetEnvironmentVariable("Audience");
-
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = issuerEnv,
+                ValidIssuer = configuration.JwtIssuer(),
 
                 ValidateAudience = true,
-                ValidAudience = audienceEnv,
+                ValidAudience = configuration.JwtAudience(),
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey,
