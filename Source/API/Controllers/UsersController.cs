@@ -1,4 +1,4 @@
-﻿using API.DTOs.Responses;
+using API.DTOs.Responses;
 using Common.Application.Services.Users;
 using Identity.DTOs.Requests;
 using Identity.DTOs.Responses;
@@ -24,6 +24,26 @@ namespace API.Controllers
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetUserById([FromRoute] Guid id)
+        {
+            var user = await _usersService.ListById(id);
+
+            if (user is null)
+                return NotFound(string.Empty);
+
+            return Ok(user);
+        }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
+        {
+            await _usersService.Delete(id);
+            return NoContent();
+        }
+
+        [Authorize(Policy = "RequireAdministratorRole")]
         [HttpPost("admCreate")]
         public async Task<IActionResult> CreateUserAsAdministrator([FromBody] CreateUserAsAdministratorRequest request)
         {
@@ -33,7 +53,7 @@ namespace API.Controllers
 
         [Authorize(Policy = "RequireAdministratorRole")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ListUsersResponse>>> ListUsers()
+        public async Task<ActionResult<IEnumerable<ListUsersResponse>>> GetUsers()
         {
             var usersDto = await _usersService.ListUsers();
             return Ok(usersDto.Select(x => ListUsersResponse.ToListUsersResponse(x)));

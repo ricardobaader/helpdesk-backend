@@ -10,6 +10,6 @@ namespace Common.Application.Services.Tickets
         Task Start(Guid id, Guid supportUserId);
         Task Finish(Guid id, Guid supportUserId);
         Task Close(Guid id, Guid userId);
-        Task Delete(Guid id);
+        Task Delete(Guid id, Guid userId);
     }
 }

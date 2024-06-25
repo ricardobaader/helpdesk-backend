@@ -1,5 +1,4 @@
 ﻿using Common.Domain.Rooms;
-using Common.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Common.Utils.Extensions

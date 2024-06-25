@@ -27,13 +27,13 @@ namespace Common.Infrastructure.SqlServer.Repositories
                     Title = x.Title,
                     Description = x.Description,
                     Status = x.Status.GetDescription(),
-                    Responsible = x.SupportUser.Name,
                     CreatedAt = x.CreatedAt,
-                    RoomDto = new ListRoomDto()
+                    Responsible = x.SupportUser.Name,
+                    RoomDto = new ListRoomDto
                     {
                         Id = x.RoomId,
                         Name = x.Room.Name,
-                        Description = x.Room.Description
+                        Description = x.Room.Description,
                     }
                 }).ToListAsync();
         }
@@ -44,7 +44,6 @@ namespace Common.Infrastructure.SqlServer.Repositories
                 .Include(x => x.User)
                 .Where(x => x.Status == TicketStatus.Solved && x.LastUpdatedAt.AddDays(DaysToWaitBeforeClosing) <= DateTime.UtcNow && !x.IsDeleted)
                 .ToListAsync();
-
         }
     }
 }

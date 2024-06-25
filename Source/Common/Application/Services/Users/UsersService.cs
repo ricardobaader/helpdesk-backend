@@ -1,4 +1,5 @@
-﻿using Common.Domain.Users;
+using Common.Domain.Tickets;
+using Common.Domain.Users;
 using Common.Exceptions;
 using Common.Utils;
 using Common.Utils.Extensions;
@@ -11,11 +12,15 @@ namespace Common.Application.Services.Users
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository _usersRepository;
+        private readonly ITicketsRepository _ticketsRepository;
         private readonly IIdentityService _identityService;
 
-        public UsersService(IUsersRepository userRepository, IIdentityService identityService)
+        public UsersService(IUsersRepository userRepository,
+            ITicketsRepository ticketsRepository,
+            IIdentityService identityService)
         {
             _usersRepository = userRepository;
+            _ticketsRepository = ticketsRepository;
             _identityService = identityService;
         }
 
@@ -51,7 +56,7 @@ namespace Common.Application.Services.Users
 
             var userCreated = await _identityService.CreateUser(request, request.UserType);
 
-            if(!userCreated.IsSuccess)
+            if (!userCreated.IsSuccess)
                 throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", userCreated.Errors)}");
 
             await _usersRepository.InsertOne(user);
@@ -59,9 +64,34 @@ namespace Common.Application.Services.Users
             return userCreated;
         }
 
+        public async Task Delete(Guid id)
+        {
+            var userDb = await _usersRepository.SelectOneBy(x => x.Id == id);
+            if (userDb is null)
+                throw new EntityNotFoundException("A sala informada não existe");
+
+            var existTicketWithUser = await _ticketsRepository.ExistsBy(x => x.UserId == id || x.SupportUserId == id && !x.IsDeleted);
+            if (existTicketWithUser)
+                throw new ActiveObjectException("Não foi possível excluir esta usuário porque ela está vinculada a um chamado ativo.");
+
+            userDb.SetDelete();
+            _usersRepository.UpdateOne(userDb);
+        }
+
         public async Task<IEnumerable<ListUsersDto>> ListUsers()
         {
             return await _usersRepository.ListUsers();
+        }
+
+        public async Task<ListUsersDto> ListById(Guid userId)
+        {
+            return await _usersRepository.ProjectOneBy(x => new ListUsersDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Email = x.Email,
+                UserType = x.UserType.GetDescription()
+            }, x => x.Id == userId && !x.IsDeleted);
         }
 
         public async Task<UserLoginResponse> Login(UserLoginRequest request)

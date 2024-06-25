@@ -1,4 +1,4 @@
-﻿using API.DTOs.Requests;
+using API.DTOs.Requests;
 using API.DTOs.Responses;
 using Common.Application.Services.Tickets;
 using Microsoft.AspNetCore.Authorization;
@@ -41,7 +41,7 @@ namespace API.Controllers
             if (ticket is null)
                 return NotFound(string.Empty);
 
-            return Ok(ListTicketsResponse.ToListTicketsResponse(ticket));
+            return Ok(ListTicketDetailsResponse.ToListTicketDetailsResponse(ticket));
         }
 
         [Authorize(Policy = "RequireSupportRole")]
@@ -72,10 +72,10 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTicket([FromRoute] Guid id)
+        [HttpDelete("{id}/user/{userId}")]
+        public async Task<IActionResult> DeleteTicket([FromRoute] Guid id, Guid userId)
         {
-            await _ticketsService.Delete(id);
+            await _ticketsService.Delete(id, userId);
             return Ok();
         }
     }
