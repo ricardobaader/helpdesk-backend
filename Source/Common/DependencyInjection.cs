@@ -57,19 +57,14 @@ namespace Common
                 .AddEntityFrameworkStores<IdentityDataContext>()
                 .AddDefaultTokenProviders();
 
-            var jwtAppSettingOptions = configuration.GetSection(nameof(JwtOptions));
-#pragma warning disable CS8604 // Possible null reference argument.
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("jwtOptions:SecurityKey").Value));
-#pragma warning restore CS8604 // Possible null reference argument.
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.JwtSecurityKey()));
 
             services.Configure<JwtOptions>(options =>
             {
-#pragma warning disable CS8601 // Possible null reference assignment.
-                options.Issuer = jwtAppSettingOptions[nameof(JwtOptions.Issuer)];
-                options.Audience = jwtAppSettingOptions[nameof(JwtOptions.Audience)];
+                options.Issuer = configuration.JwtIssuer();
+                options.Audience = configuration.JwtAudience();
                 options.SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
-                options.Expiration = int.Parse(jwtAppSettingOptions[nameof(JwtOptions.Expiration)] ?? "0");
-#pragma warning restore CS8601 // Possible null reference assignment.
+                options.Expiration = int.Parse(configuration.JwtTokenExpiration() ?? "0");
             });
 
             services.Configure<IdentityOptions>(options =>
@@ -85,10 +80,10 @@ namespace Common
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
-                ValidIssuer = configuration.GetSection("jwtOptions:Issuer").Value,
+                ValidIssuer = configuration.JwtIssuer(),
 
                 ValidateAudience = true,
-                ValidAudience = configuration.GetSection("jwtOptions:Audience").Value,
+                ValidAudience = configuration.JwtAudience(),
 
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = securityKey,
