@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Common.Domain.Chats;
+﻿using Common.Domain.Chats;
 using Common.Domain.Tickets;
 using Common.Utils;
 using System.Text.Json.Serialization;

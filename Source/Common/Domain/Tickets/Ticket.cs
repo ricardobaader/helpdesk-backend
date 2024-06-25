@@ -68,7 +68,7 @@ namespace Common.Domain.Tickets
             Status = TicketStatus.Closed;
         }
 
-        private void ValidateInfo(string title, string description, Guid roomId, Guid userId) => 
+        private void ValidateInfo(string title, string description, Guid roomId, Guid userId) =>
             Errors = EntityValidator.New()
                 .Requiring(title, "É necessário informar um título")
                 .Requiring(description, "É necessário informar uma descrição")

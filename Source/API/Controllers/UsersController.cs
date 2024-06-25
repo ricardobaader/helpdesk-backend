@@ -22,7 +22,7 @@ namespace API.Controllers
             await _usersService.CreateUser(request);
             return NoContent();
         }
-        
+
         [Authorize(Policy = "RequireAdministratorRole")]
         [HttpGet("{id}")]
         public async Task<ActionResult> GetUserById([FromRoute] Guid id)
@@ -34,7 +34,7 @@ namespace API.Controllers
 
             return Ok(user);
         }
-      
+
         [Authorize(Policy = "RequireAdministratorRole")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)

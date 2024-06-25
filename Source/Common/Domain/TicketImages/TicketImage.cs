@@ -7,12 +7,12 @@ namespace Common.Domain.TicketImages
     {
         public byte[] Image { get; private set; }
 
-        [JsonIgnore] 
+        [JsonIgnore]
         public virtual Ticket Ticket { get; protected set; }
         public Guid TicketId { get; set; }
 
-        public TicketImage(Guid ticketId, byte[] image) 
-        { 
+        public TicketImage(Guid ticketId, byte[] image)
+        {
             SetBaseProperties();
             TicketId = ticketId;
             Image = image;

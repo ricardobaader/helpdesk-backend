@@ -20,7 +20,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Common
 {
@@ -48,7 +47,6 @@ namespace Common
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<ITicketsRepository, TicketsRepository>();
             services.AddScoped<IChatsRepository, ChatRepository>();
-
         }
 
         internal static void AddAuthentication(this IServiceCollection services, IConfiguration configuration)

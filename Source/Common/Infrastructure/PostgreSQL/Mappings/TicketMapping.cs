@@ -15,7 +15,7 @@ namespace Common.Infrastructure.SqlServer.Mappings
 
         protected override void MapProperties()
         {
-            Builder.Property(x => x.Number).HasColumnName("number").IsRequired().HasIdentityOptions(startValue: 100).ValueGeneratedOnAdd(); 
+            Builder.Property(x => x.Number).HasColumnName("number").IsRequired().HasIdentityOptions(startValue: 100).ValueGeneratedOnAdd();
             Builder.Property(x => x.Title).HasColumnName("title").IsRequired();
             Builder.Property(x => x.Description).HasColumnName("description").IsRequired();
             Builder.Property(x => x.UserId).HasColumnName("user_id").IsRequired();

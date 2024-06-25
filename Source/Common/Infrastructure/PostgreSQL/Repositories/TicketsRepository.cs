@@ -44,7 +44,6 @@ namespace Common.Infrastructure.SqlServer.Repositories
                 .Include(x => x.User)
                 .Where(x => x.Status == TicketStatus.Solved && x.LastUpdatedAt.AddDays(DaysToWaitBeforeClosing) <= DateTime.UtcNow && !x.IsDeleted)
                 .ToListAsync();
-
         }
     }
 }

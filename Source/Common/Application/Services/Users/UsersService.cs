@@ -1,8 +1,6 @@
 using Common.Domain.Tickets;
 using Common.Domain.Users;
 using Common.Exceptions;
-using Common.Domain.Users;
-using Common.Exceptions;
 using Common.Utils;
 using Common.Utils.Extensions;
 using Identity.DTOs.Requests;
@@ -58,7 +56,7 @@ namespace Common.Application.Services.Users
 
             var userCreated = await _identityService.CreateUser(request, request.UserType);
 
-            if(!userCreated.IsSuccess)
+            if (!userCreated.IsSuccess)
                 throw new Exceptions.InvalidDataException($"Um ou mais dos dados informados são inválidos: {string.Join(", ", userCreated.Errors)}");
 
             await _usersRepository.InsertOne(user);
