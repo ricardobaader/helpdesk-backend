@@ -49,7 +49,7 @@ app.UseMiddleware<ExceptionHandlerMiddleware>()
     .UseMiddleware<UnitOfWorkMiddleware>();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "HelpDeskAPI"));
 
 app.UseHttpsRedirection();
 
