@@ -24,7 +24,7 @@ namespace Common.Application.Services.Users
             _identityService = identityService;
         }
 
-        public async Task<CreateUserResponse> CreateUser(CreateUserRequest request)
+        public async Task<Guid> CreateUser(CreateUserRequest request)
         {
             if (await _usersRepository.ExistsBy(x => x.Email == request.Email && !x.IsDeleted))
                 throw new ExistingEntityException("O usuário informado ja existe.");
@@ -41,7 +41,7 @@ namespace Common.Application.Services.Users
 
             await _usersRepository.InsertOne(user);
 
-            return userCreated;
+            return user.Id;
         }
 
         public async Task<CreateUserResponse> CreateUserAsAdministrator(CreateUserAsAdministratorRequest request)

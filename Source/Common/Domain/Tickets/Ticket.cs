@@ -68,6 +68,12 @@ namespace Common.Domain.Tickets
             Status = TicketStatus.Closed;
         }
 
+        public void CancelTicket()
+        {
+            SetUpdate();
+            Status = TicketStatus.Canceled;
+        }
+
         private void ValidateInfo(string title, string description, Guid roomId, Guid userId) =>
             Errors = EntityValidator.New()
                 .Requiring(title, "É necessário informar um título")

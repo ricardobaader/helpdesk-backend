@@ -26,9 +26,9 @@ namespace API.Controllers
 
         [Authorize]
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<ListTicketsResponse>> ListTickets([FromRoute] Guid userId)
+        public async Task<ActionResult<ListTicketsResponse>> ListTickets([FromRoute] Guid userId, [FromQuery] TicketsFiltersRequest request)
         {
-            var tickets = await _ticketsService.ListAllBy(userId);
+            var tickets = await _ticketsService.ListAllBy(userId, request);
             return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
         }
 
@@ -73,9 +73,9 @@ namespace API.Controllers
 
         [Authorize]
         [HttpDelete("{id}/user/{userId}")]
-        public async Task<IActionResult> DeleteTicket([FromRoute] Guid id, Guid userId)
+        public async Task<IActionResult> CancelTicket([FromRoute] Guid id, Guid userId)
         {
-            await _ticketsService.Delete(id, userId);
+            await _ticketsService.Cancel(id, userId);
             return Ok();
         }
     }

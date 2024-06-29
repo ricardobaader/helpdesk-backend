@@ -1,4 +1,5 @@
-﻿using Common.Application.Services.Email;
+﻿using API.DTOs.Requests;
+using Common.Application.Services.Email;
 using Common.Domain;
 using Common.Domain.Rooms;
 using Common.Domain.TicketImages;
@@ -82,14 +83,16 @@ namespace Common.Application.Services.Tickets
             return ticket.Id;
         }
 
-        public async Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId)
+        public async Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId, TicketsFiltersRequest request)
         {
             var user = await _usersRepository.SelectOneBy(x => x.Id == userId && !x.IsDeleted);
             if (user is null)
                 throw new EntityNotFoundException("O usuário informado não existe");
 
+            var filters = request.ToTicketsFiltersDto();
+
             if (user.UserType == UserType.User)
-                return await _ticketsRepository.ListAllTicketsBy(userId);
+                return await _ticketsRepository.ListAllTicketsBy(userId, filters);
 
             return await _ticketsRepository.ProjectManyBy(x => new ListTicketsDto
             {
@@ -106,7 +109,7 @@ namespace Common.Application.Services.Tickets
                     Name = x.Room.Name,
                     Description = x.Room.Description,
                 }
-            }, x => !x.IsDeleted);
+            }, x => (!request.Status.HasValue || x.Status == request.Status) && !x.IsDeleted);
         }
 
         public async Task<ListTicketsDto> ListById(Guid ticketId)
@@ -192,7 +195,7 @@ namespace Common.Application.Services.Tickets
             await SendTicketStatusUpdateEmailAsync(ticket, user);
         }
 
-        public async Task Delete(Guid id, Guid userId)
+        public async Task Cancel(Guid id, Guid userId)
         {
             var ticket = await _ticketsRepository.SelectOneBy(x => x.Id == id && !x.IsDeleted);
             if (ticket is null)
@@ -204,9 +207,9 @@ namespace Common.Application.Services.Tickets
             if (ticket.Status != TicketStatus.Pending)
                 throw new InvalidDataException("Um chamado em andamento ou concluído não pode ser excluído");
 
-            ticket.SetDelete();
+            ticket.CancelTicket();
 
-            _ticketsRepository.DeleteOne(ticket);
+            _ticketsRepository.UpdateOne(ticket);
         }
 
         private async Task<Ticket> ValidateIfTicketCanChangeStatus(Guid id, Guid supportUserId)

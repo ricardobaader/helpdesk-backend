@@ -15,27 +15,27 @@ namespace Common.Infrastructure.SqlServer.Repositories
         {
         }
 
-        public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsBy(Guid userId)
+        public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsBy(Guid userId, TicketsFiltersDto filters)
         {
             return await Entity
-                .Where(x => !x.IsDeleted && x.UserId == userId)
-                .AsNoTracking()
-                .Select(x => new ListTicketsDto
+            .Where(x => (!filters.TicketStatus.HasValue || x.Status == filters.TicketStatus) && x.UserId == userId && !x.IsDeleted)
+            .AsNoTracking()
+            .Select(x => new ListTicketsDto
+            {
+                Id = x.Id,
+                Number = x.Number,
+                Title = x.Title,
+                Description = x.Description,
+                Status = x.Status.GetDescription(),
+                CreatedAt = x.CreatedAt,
+                Responsible = x.SupportUser.Name,
+                RoomDto = new ListRoomDto
                 {
-                    Id = x.Id,
-                    Number = x.Number,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Status = x.Status.GetDescription(),
-                    CreatedAt = x.CreatedAt,
-                    Responsible = x.SupportUser.Name,
-                    RoomDto = new ListRoomDto
-                    {
-                        Id = x.RoomId,
-                        Name = x.Room.Name,
-                        Description = x.Room.Description,
-                    }
-                }).ToListAsync();
+                    Id = x.RoomId,
+                    Name = x.Room.Name,
+                    Description = x.Room.Description,
+                }
+            }).ToListAsync();
         }
 
         public async Task<IEnumerable<Ticket>> ListAllSolvedTickets()
