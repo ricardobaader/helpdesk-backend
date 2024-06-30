@@ -1,4 +1,5 @@
-﻿using Common.Application.Services.Email;
+﻿using Common.Application.Services.Chats;
+using Common.Application.Services.Email;
 using Common.Application.Services.Rooms;
 using Common.Application.Services.Tickets;
 using Common.Application.Services.Users;
@@ -42,6 +43,7 @@ namespace Common
             services.AddScoped<ITicketsService, TicketsService>();
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IRoomsService, RoomsService>();
+            services.AddScoped<IChatsService, ChatsService>();
             services.AddHostedService<CloseTicketService>();
 
             services.AddScoped<IUsersRepository, UsersRepository>();
