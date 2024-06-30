@@ -32,6 +32,14 @@ namespace API.Controllers
             return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
         }
 
+        [Authorize(Policy = "RequireSupportRole")]
+        [HttpGet("support/{supportUserId}")]
+        public async Task<ActionResult<ListTicketsResponse>> ListTicketsTakedBySupportUser([FromRoute] Guid supportUserId)
+        {
+            var tickets = await _ticketsService.ListAllTicketsTakedBy(supportUserId);
+            return Ok(tickets.Select(x => ListTicketsResponse.ToListTicketsResponse(x)));
+        }
+
         [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult> ListTicketDetails([FromRoute] Guid id)

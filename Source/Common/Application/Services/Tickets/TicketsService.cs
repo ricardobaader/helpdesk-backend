@@ -112,6 +112,30 @@ namespace Common.Application.Services.Tickets
             }, x => (!request.Status.HasValue || x.Status == request.Status) && !x.IsDeleted);
         }
 
+        public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsTakedBy(Guid supporUserId)
+        {
+            var user = await _usersRepository.SelectOneBy(x => x.Id == supporUserId && !x.IsDeleted);
+            if (user is null)
+                throw new EntityNotFoundException("O usuário informado não existe");
+
+            return await _ticketsRepository.ProjectManyBy(x => new ListTicketsDto
+            {
+                Id = x.Id,
+                Number = x.Number,
+                Title = x.Title,
+                Description = x.Description,
+                Status = x.Status.GetDescription(),
+                CreatedAt = x.CreatedAt,
+                Responsible = x.SupportUser.Name,
+                RoomDto = new ListRoomDto
+                {
+                    Id = x.RoomId,
+                    Name = x.Room.Name,
+                    Description = x.Room.Description,
+                }
+            }, x => x.SupportUserId == supporUserId && !x.IsDeleted);
+        }
+
         public async Task<ListTicketsDto> ListById(Guid ticketId)
         {
             return await _ticketsRepository.ProjectOneBy(x => new ListTicketsDto

@@ -7,6 +7,7 @@ namespace Common.Application.Services.Tickets
     {
         Task<Guid> Create(CreateTicketDto request);
         Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId, TicketsFiltersRequest request);
+        Task<IEnumerable<ListTicketsDto>> ListAllTicketsTakedBy(Guid supportUserId);
         Task<ListTicketsDto> ListById(Guid ticketId);
         Task Start(Guid id, Guid supportUserId);
         Task Finish(Guid id, Guid supportUserId);
