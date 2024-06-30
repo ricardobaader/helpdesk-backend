@@ -68,11 +68,11 @@ namespace Common.Application.Services.Users
         {
             var userDb = await _usersRepository.SelectOneBy(x => x.Id == id);
             if (userDb is null)
-                throw new EntityNotFoundException("A sala informada não existe");
+                throw new EntityNotFoundException("O usuário informado não existe");
 
             var existTicketWithUser = await _ticketsRepository.ExistsBy(x => x.UserId == id || x.SupportUserId == id && !x.IsDeleted);
             if (existTicketWithUser)
-                throw new ActiveObjectException("Não foi possível excluir esta usuário porque ela está vinculada a um chamado ativo.");
+                throw new ActiveObjectException("Não foi possível excluir este usuário porque ele está vinculada a um chamado ativo.");
 
             userDb.SetDelete();
             _usersRepository.UpdateOne(userDb);
