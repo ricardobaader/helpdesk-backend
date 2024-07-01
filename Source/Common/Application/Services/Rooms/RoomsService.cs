@@ -42,7 +42,7 @@ namespace Common.Application.Services.Rooms
             if (room.IsValid == false)
                 throw new InvalidDataException($"Não foi possível criar a sala porque existem incoerências nos dados Errors: {string.Join("; ", room.Errors)}");
 
-            var qrCodeByteArray = QRCodeGeneratorHelper.GenerateQRCode(room.Id);
+            var qrCodeByteArray = QRCodeGeneratorHelper.GenerateQRCode(room.Name);
 
             room.SetQrCode(qrCodeByteArray);
 
@@ -66,7 +66,7 @@ namespace Common.Application.Services.Rooms
             if (roomDb.IsValid == false)
                 throw new InvalidDataException($"Não foi possível atualizar a sala porque existem incoerências nos dados Errors: {string.Join("; ", roomDb.Errors)}");
 
-            var qrCodeByteArray = QRCodeGeneratorHelper.GenerateQRCode(roomDb.Id);
+            var qrCodeByteArray = QRCodeGeneratorHelper.GenerateQRCode(roomDb.Name);
 
             roomDb.SetQrCode(qrCodeByteArray);
 
