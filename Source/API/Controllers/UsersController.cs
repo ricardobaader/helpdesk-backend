@@ -67,7 +67,7 @@ namespace API.Controllers
             if (responseLogin.IsSuccess)
                 return Ok(responseLogin);
             else if (responseLogin.Errors.Count > 0)
-                return BadRequest(responseLogin);
+                return BadRequest(responseLogin.Errors);
 
             return Unauthorized(responseLogin);
         }
