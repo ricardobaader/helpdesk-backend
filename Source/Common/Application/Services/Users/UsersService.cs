@@ -66,16 +66,18 @@ namespace Common.Application.Services.Users
 
         public async Task Delete(Guid id)
         {
-            var userDb = await _usersRepository.SelectOneBy(x => x.Id == id);
+            var userDb = await _usersRepository.SelectOneBy(x => x.Id == id && !x.IsDeleted);
             if (userDb is null)
-                throw new EntityNotFoundException("A sala informada não existe");
+                throw new EntityNotFoundException("A usuário informado não existe ou ja está inativado");
 
             var existTicketWithUser = await _ticketsRepository.ExistsBy(x => x.UserId == id || x.SupportUserId == id && !x.IsDeleted);
             if (existTicketWithUser)
-                throw new ActiveObjectException("Não foi possível excluir esta usuário porque ela está vinculada a um chamado ativo.");
+                throw new ActiveObjectException("Não foi possível excluir este usuário porque ele está vinculado a um chamado ativo.");
 
             userDb.SetDelete();
             _usersRepository.UpdateOne(userDb);
+
+            await _identityService.DeleteUser(userDb.Email);
         }
 
         public async Task<IEnumerable<ListUsersDto>> ListUsers()
@@ -106,6 +108,9 @@ namespace Common.Application.Services.Users
 
             var user = await _usersRepository
                 .SelectOneBy(x => x.Email == request.Email && !x.IsDeleted);
+
+            if (user is null)
+                throw new EntityNotFoundException("O usuário informado é inválido");
 
             var userLoggedIn = await _identityService.Login(request);
 
