@@ -1,5 +1,7 @@
 ﻿using Common.Application.Services.Email;
+using Common.Configurations;
 using Common.Domain.Tickets;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -8,11 +10,14 @@ namespace Common.Application.Services.Tickets
     public class CloseTicketService : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
 
         public CloseTicketService(
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            IConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
+            _configuration = configuration;
         }
 
         private const int SecondsInterval = 20;
@@ -27,7 +32,7 @@ namespace Common.Application.Services.Tickets
 
         public async Task ExecuteClosingTickets()
         {
-            if (Environment.GetEnvironmentVariable("EXECUTE_CLOSING_TICKETS_JOB") == "false")
+            if (_configuration.ExecuteClosingTicketsJob() == "false")
                 return;
 
             var frontendBaseUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
