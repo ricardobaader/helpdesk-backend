@@ -109,7 +109,7 @@ namespace Common.Application.Services.Tickets
                     Name = x.Room.Name,
                     Description = x.Room.Description,
                 }
-            }, x => (!request.Status.HasValue || x.Status == request.Status) && !x.IsDeleted);
+            }, x => !request.Status.HasValue || x.Status == request.Status);
         }
 
         public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsTakedBy(Guid supporUserId)

@@ -18,7 +18,7 @@ namespace Common.Infrastructure.SqlServer.Repositories
         public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsBy(Guid userId, TicketsFiltersDto filters)
         {
             return await Entity
-            .Where(x => (!filters.TicketStatus.HasValue || x.Status == filters.TicketStatus) && x.UserId == userId && !x.IsDeleted)
+            .Where(x => (!filters.TicketStatus.HasValue || x.Status == filters.TicketStatus) && x.UserId == userId)
             .AsNoTracking()
             .Select(x => new ListTicketsDto
             {
