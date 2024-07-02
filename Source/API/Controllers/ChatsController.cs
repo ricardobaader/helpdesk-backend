@@ -17,9 +17,9 @@ namespace API.Controllers
 
         [Authorize]
         [HttpPost("ticket/{ticketId}/user/{userId}")]
-        public async Task<IActionResult> SendMessage([FromRoute] Guid ticketId, Guid userId, [FromBody] CreateChatMessageRequest request)
+        public async Task<IActionResult> SendMessage([FromRoute] Guid ticketId, Guid userId, [FromForm] CreateChatMessageRequest request)
         {
-            await _chatsService.SendMessage(ticketId, userId, request.Message);
+            await _chatsService.SendMessage(ticketId, userId, request.ToCreateChatMessageDto());
             return Ok();
         }
 

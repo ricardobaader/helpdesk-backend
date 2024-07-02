@@ -7,5 +7,7 @@ namespace Common.Domain.Rooms
         public string Message { get; init; }
         public DateTime SendedAt { get; init; }
         public ListUsersDto User {  get; init; }
+        public string ImageBase64 { get; init; }
+
     }
 }

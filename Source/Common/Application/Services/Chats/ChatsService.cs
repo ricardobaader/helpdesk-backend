@@ -5,11 +5,15 @@ using Common.Domain.Tickets;
 using Common.Domain.Users;
 using Common.Exceptions;
 using Common.Utils.Extensions;
+using InvalidDataException = Common.Exceptions.InvalidDataException;
 
 namespace Common.Application.Services.Chats
 {
     public class ChatsService : IChatsService
     {
+        private const int MaxImageSizeInBytes = 5 * 1024 * 1024; // 5 MB
+        private readonly List<string> AcceptedImageContentTypes = new() { "image/jpg", "image/png", "image/jpeg", "image/webp" };
+
         public readonly IChatsRepository _chatsRepository;
         private readonly IBaseEntityRepository<User> _usersRepository;
         private readonly IBaseEntityRepository<Ticket> _ticketsRepository;
@@ -23,9 +27,21 @@ namespace Common.Application.Services.Chats
             _ticketsRepository = ticketsRepository;
         }
 
-        public async Task SendMessage(Guid ticketId, Guid userId, string message)
+        public async Task SendMessage(Guid ticketId, Guid userId, CreateChatMessageDto request)
         {
-            var chat = new Chat(message, userId, ticketId);
+            byte[] imageBytes = null;
+            if (request.Image != null)
+            {
+                if (!AcceptedImageContentTypes.Contains(request.Image.ContentType))
+                    throw new InvalidDataException($"Tipo de extensão de imagem não suportado: {request.Image.ContentType}. Tipos aceitos: {string.Join(", ", AcceptedImageContentTypes)}");
+
+                if (request.Image.Length > MaxImageSizeInBytes)
+                    throw new InvalidDataException("A imagem excede o tamanho máximo permitido de 5 MB.");
+                
+                imageBytes = await request.Image.ConvertToByteArray();
+            }
+
+            var chat = new Chat(request.Message, imageBytes, userId, ticketId);
 
             var user = await _usersRepository.SelectOneBy(x => x.Id == userId && !x.IsDeleted);
             if (user is null)
@@ -44,13 +60,14 @@ namespace Common.Application.Services.Chats
             {
                 Message = x.Message,
                 SendedAt = x.CreatedAt,
-                User = new ListUsersDto 
+                User = new ListUsersDto
                 {
                     Id = x.UserId,
                     Name = x.User.Name,
                     Email = x.User.Email,
                     UserType = x.User.UserType.GetDescription(),
-                }
+                },
+                ImageBase64 = x.Image != null ? Convert.ToBase64String(x.Image) : null,
             }, x => x.TicketId == ticketId).Result.OrderBy(x => x.SendedAt);
         }
     }
