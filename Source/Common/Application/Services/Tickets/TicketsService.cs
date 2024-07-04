@@ -133,7 +133,7 @@ namespace Common.Application.Services.Tickets
                     Name = x.Room.Name,
                     Description = x.Room.Description,
                 }
-            }, x => x.SupportUserId == supporUserId && !x.IsDeleted);
+            }, x => x.SupportUserId == supporUserId);
         }
 
         public async Task<ListTicketsDto> ListById(Guid ticketId)
