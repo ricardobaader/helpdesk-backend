@@ -15,19 +15,15 @@ namespace Common.Utils
         private const bool DrawQuietZones = false;
         private const int QrCodePositionY = 1050;
 
-        private const int FixedQrCodeWidth = 600;
-        private const int FixedQrCodeHeight = 600;
-
         public static byte[] GenerateQRCode(string name)
         {
             var qrCodeImage = GenerateQrCodeImage(name);
-            var resizedQrCodeImage = ResizeImage(qrCodeImage, FixedQrCodeWidth, FixedQrCodeHeight);
             var baseImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "template.png");
             var baseImage = LoadImage(baseImagePath);
 
             using var graphics = Graphics.FromImage(baseImage);
 
-            DrawQrCodeOnBaseImage(graphics, resizedQrCodeImage, baseImage.Width);
+            DrawQrCodeOnBaseImage(graphics, qrCodeImage, baseImage.Width);
 
             return ConvertImageToByteArray(baseImage);
         }
@@ -61,31 +57,6 @@ namespace Common.Utils
             using var ms = new MemoryStream();
             image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             return ms.ToArray();
-        }
-
-        private static Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
-                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new System.Drawing.Imaging.ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
         }
     }
 }
