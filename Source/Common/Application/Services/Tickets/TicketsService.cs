@@ -72,11 +72,11 @@ namespace Common.Application.Services.Tickets
             var subject = "Chamado criado com Sucesso!";
             var message = @$"
                 <p>Olá {user.Name},</p>
-                <p>Seu chamado <b>{ticket.Title}</b> foi criado com sucesso e recebido por nosso sistema e está na fila para ser atendido.</p>
-                <p>Caso necessário, entraremos em contato para obter mais informações a respeito do problema.</p>
-                <p>Para acompanhar o status do chamado, aperte o botão abaixo:</p>
-                <p><a href='{FrontendBaseUrl}' class='btn'>Clique Aqui</a></p>
-                <p>Obrigado por contribuir pela melhoria de nossa Universidade.</p>";
+                <p>Seu chamado <b>{ticket.Title}</b> foi criado com sucesso e já está na fila para ser atendido.</p>
+                <p>Se necessário, entraremos em contato para obter mais informações sobre o problema.</p>
+                <p>Para acompanhar o status do chamado, clique no botão abaixo:</p>
+                <p><a href='{FrontendBaseUrl}/dashboard/user/tickets/{ticket.Id}' class='btn'>Clique Aqui</a></p>
+                <p>Obrigado por contribuir para a melhoria de nossa Universidade.</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);
 
@@ -260,7 +260,7 @@ namespace Common.Application.Services.Tickets
                 <p>O status do seu chamado foi atualizado.</p>
                 <p><b>Novo Status: </b>{ticket.Status.GetDescription()}</p>
                 <p>Para acompanhar o seu chamado, aperte o botão abaixo:</p>
-                <p><a href='{FrontendBaseUrl}' class='btn'>Clique Aqui</a></p>
+                <p><a href='{FrontendBaseUrl}/dashboard/user/tickets/{ticket.Id}' class='btn'>Clique Aqui</a></p>
                 <p>Estamos à disposição para qualquer dúvida!</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);

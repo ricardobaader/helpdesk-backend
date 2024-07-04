@@ -56,7 +56,7 @@ namespace Common.Application.Services.Tickets
                     <p>Olá {ticket.User.Name},</p>
                     <p>$Seu chamado de número {ticket.Number} foi encerrado devido à falta de retorno após a solução. Se você ainda estiver enfrentando o mesmo problema, por favor, abra um novo ticket.</p>
                     <p>Caso deseje acessar o nosso sistema, clique no botão abaixo:</p>
-                    <p><a href='{frontendBaseUrl}' class='btn'>Clique Aqui</a></p>
+                    <p><a href='{frontendBaseUrl}/dashboard/user/tickets/{ticket.Id}' class='btn'>Clique Aqui</a></p>
                     <p>Estamos à disposição para qualquer dúvida!</p>";
 
                 await emailSenderService.SendEmailAsync(ticket.User.Email, subject, message);
