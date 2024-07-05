@@ -1,4 +1,5 @@
-﻿using Common.Application.Services.Email;
+﻿using API.DTOs.Requests;
+using Common.Application.Services.Email;
 using Common.Domain;
 using Common.Domain.Rooms;
 using Common.Domain.TicketImages;
@@ -71,25 +72,27 @@ namespace Common.Application.Services.Tickets
             var subject = "Chamado criado com Sucesso!";
             var message = @$"
                 <p>Olá {user.Name},</p>
-                <p>Seu chamado <b>{ticket.Title}</b> foi criado com sucesso e recebido por nosso sistema e está na fila para ser atendido.</p>
-                <p>Caso necessário, entraremos em contato para obter mais informações a respeito do problema.</p>
-                <p>Para acompanhar o status do chamado, aperte o botão abaixo:</p>
-                <p><a href='{FrontendBaseUrl}' class='btn'>Clique Aqui</a></p>
-                <p>Obrigado por contribuir pela melhoria de nossa Universidade.</p>";
+                <p>Seu chamado <b>{ticket.Title}</b> foi criado com sucesso e já está na fila para ser atendido.</p>
+                <p>Se necessário, entraremos em contato para obter mais informações sobre o problema.</p>
+                <p>Para acompanhar o status do chamado, clique no botão abaixo:</p>
+                <p><a href='{FrontendBaseUrl}/dashboard/user/tickets/{ticket.Id}' class='btn'>Clique Aqui</a></p>
+                <p>Obrigado por contribuir para a melhoria de nossa Universidade.</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);
 
             return ticket.Id;
         }
 
-        public async Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId)
+        public async Task<IEnumerable<ListTicketsDto>> ListAllBy(Guid userId, TicketsFiltersRequest request)
         {
             var user = await _usersRepository.SelectOneBy(x => x.Id == userId && !x.IsDeleted);
             if (user is null)
                 throw new EntityNotFoundException("O usuário informado não existe");
 
+            var filters = request.ToTicketsFiltersDto();
+
             if (user.UserType == UserType.User)
-                return await _ticketsRepository.ListAllTicketsBy(userId);
+                return await _ticketsRepository.ListAllTicketsBy(userId, filters);
 
             return await _ticketsRepository.ProjectManyBy(x => new ListTicketsDto
             {
@@ -106,7 +109,31 @@ namespace Common.Application.Services.Tickets
                     Name = x.Room.Name,
                     Description = x.Room.Description,
                 }
-            }, x => !x.IsDeleted);
+            }, x => !request.Status.HasValue || x.Status == request.Status);
+        }
+
+        public async Task<IEnumerable<ListTicketsDto>> ListAllTicketsTakedBy(Guid supporUserId)
+        {
+            var user = await _usersRepository.SelectOneBy(x => x.Id == supporUserId && !x.IsDeleted);
+            if (user is null)
+                throw new EntityNotFoundException("O usuário informado não existe");
+
+            return await _ticketsRepository.ProjectManyBy(x => new ListTicketsDto
+            {
+                Id = x.Id,
+                Number = x.Number,
+                Title = x.Title,
+                Description = x.Description,
+                Status = x.Status.GetDescription(),
+                CreatedAt = x.CreatedAt,
+                Responsible = x.SupportUser.Name,
+                RoomDto = new ListRoomDto
+                {
+                    Id = x.RoomId,
+                    Name = x.Room.Name,
+                    Description = x.Room.Description,
+                }
+            }, x => x.SupportUserId == supporUserId);
         }
 
         public async Task<ListTicketsDto> ListById(Guid ticketId)
@@ -192,7 +219,7 @@ namespace Common.Application.Services.Tickets
             await SendTicketStatusUpdateEmailAsync(ticket, user);
         }
 
-        public async Task Delete(Guid id, Guid userId)
+        public async Task Cancel(Guid id, Guid userId)
         {
             var ticket = await _ticketsRepository.SelectOneBy(x => x.Id == id && !x.IsDeleted);
             if (ticket is null)
@@ -204,9 +231,9 @@ namespace Common.Application.Services.Tickets
             if (ticket.Status != TicketStatus.Pending)
                 throw new InvalidDataException("Um chamado em andamento ou concluído não pode ser excluído");
 
-            ticket.SetDelete();
+            ticket.CancelTicket();
 
-            _ticketsRepository.DeleteOne(ticket);
+            _ticketsRepository.UpdateOne(ticket);
         }
 
         private async Task<Ticket> ValidateIfTicketCanChangeStatus(Guid id, Guid supportUserId)
@@ -233,7 +260,7 @@ namespace Common.Application.Services.Tickets
                 <p>O status do seu chamado foi atualizado.</p>
                 <p><b>Novo Status: </b>{ticket.Status.GetDescription()}</p>
                 <p>Para acompanhar o seu chamado, aperte o botão abaixo:</p>
-                <p><a href='{FrontendBaseUrl}' class='btn'>Clique Aqui</a></p>
+                <p><a href='{FrontendBaseUrl}/dashboard/user/tickets/{ticket.Id}' class='btn'>Clique Aqui</a></p>
                 <p>Estamos à disposição para qualquer dúvida!</p>";
 
             await _emailSenderService.SendEmailAsync(user.Email, subject, message);

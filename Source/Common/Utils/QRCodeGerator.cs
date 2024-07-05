@@ -7,7 +7,7 @@ namespace Common.Utils
     {
         private static readonly string FrontendBaseUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
 
-        private const int PixelsPerModule = 12;
+        private const int FixedQrCodeSize = 700; // Tamanho fixo do QR Code
         private static readonly Color DarkColor = Color.FromArgb(44, 136, 217);
         private static readonly Color LightColor = Color.White;
         private const int IconSizePercent = 30;
@@ -15,9 +15,10 @@ namespace Common.Utils
         private const bool DrawQuietZones = false;
         private const int QrCodePositionY = 1050;
 
-        public static byte[] GenerateQRCode(Guid roomId)
+        public static byte[] GenerateQRCode(string name)
         {
-            var qrCodeImage = GenerateQrCodeImage(roomId);
+            var qrCodeImage = GenerateFixedSizeQrCodeImage(name);
+
             var baseImagePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "template.png");
             var baseImage = LoadImage(baseImagePath);
 
@@ -28,16 +29,23 @@ namespace Common.Utils
             return ConvertImageToByteArray(baseImage);
         }
 
-        private static Bitmap GenerateQrCodeImage(Guid roomId)
+        private static Bitmap GenerateFixedSizeQrCodeImage(string name)
         {
             var qrGenerator = new QRCodeGenerator();
-            var qrCodeData = qrGenerator.CreateQrCode($"{FrontendBaseUrl}/roomId={roomId}", QRCodeGenerator.ECCLevel.H);
+            var qrCodeData = qrGenerator.CreateQrCode($"{FrontendBaseUrl}/tickets/create/{name}", QRCodeGenerator.ECCLevel.H);
             var qrCode = new QRCode(qrCodeData);
             var iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "supportLogo.png");
 
             var icon = LoadImage(iconPath);
 
-            return qrCode.GetGraphic(PixelsPerModule, DarkColor, LightColor, icon, IconSizePercent, IconBorderWidth, DrawQuietZones);
+            int pixelsPerModule = CalculatePixelsPerModule(qrCodeData.ModuleMatrix.Count, FixedQrCodeSize);
+
+            return qrCode.GetGraphic(pixelsPerModule, DarkColor, LightColor, icon, IconSizePercent, IconBorderWidth, DrawQuietZones);
+        }
+
+        private static int CalculatePixelsPerModule(int moduleCount, int desiredSize)
+        {
+            return Math.Max(1, desiredSize / moduleCount);
         }
 
         private static Bitmap LoadImage(string path)

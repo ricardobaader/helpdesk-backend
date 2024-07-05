@@ -35,14 +35,14 @@ namespace Common.Application.ChatHub
 
         public async Task SendMessage(string message, Guid userId, Guid ticketId)
         {
-            var chat = new Chat(message, userId, ticketId);
+            ////var chat = new Chat(message, userId, ticketId);
 
-            await _chatsRepository.InsertOne(chat);
-            await _chatsRepository.Commit();
+            //await _chatsRepository.InsertOne(chat);
+            //await _chatsRepository.Commit();
 
-            var username = await _usersRepository.ProjectOneBy(x => x.Name, x => x.Id == userId);
+            //var username = await _usersRepository.ProjectOneBy(x => x.Name, x => x.Id == userId);
 
-            await Clients.Group(ticketId.ToString()).SendAsync("ReceiveMessage", username, message);
+            //await Clients.Group(ticketId.ToString()).SendAsync("ReceiveMessage", username, message);
         }
     }
 }

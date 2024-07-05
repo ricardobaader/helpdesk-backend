@@ -19,8 +19,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserRequest request)
         {
-            await _usersService.CreateUser(request);
-            return NoContent();
+            var userId = await _usersService.CreateUser(request);
+            return Created(string.Empty, userId);
         }
 
         [Authorize(Policy = "RequireAdministratorRole")]

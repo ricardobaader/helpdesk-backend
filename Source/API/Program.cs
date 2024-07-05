@@ -48,11 +48,8 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionHandlerMiddleware>()
     .UseMiddleware<UnitOfWorkMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "HelpDeskAPI"));
 
 app.UseHttpsRedirection();
 

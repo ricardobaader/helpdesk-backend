@@ -47,7 +47,7 @@ namespace Common.Application.Services.Email
                     .btn {{
                         display: inline-block;
                         background-color: #4E6AFF;
-                        color: #fff;
+                        color: #ffffff;
                         padding: 10px 20px;
                         text-decoration: none;
                         border-radius: 5px;
